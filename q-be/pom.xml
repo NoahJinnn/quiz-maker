@@ -56,6 +56,9 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <mainClass>com.personal.QuizMaker.QuizMakerApplication</mainClass>
+                    <outputDirectory>${project.basedir}/docker</outputDirectory>
+                    <finalName>QuizMaker</finalName>
                 </configuration>
             </plugin>
         </plugins>
