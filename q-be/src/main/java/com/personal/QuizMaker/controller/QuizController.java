@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class QuizController {
 
     private final QuizService quizService;
@@ -24,7 +25,7 @@ public class QuizController {
 
     @RequestMapping(value = "/quiz", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     public ResponseEntity<Quiz> createQuiz(@RequestPart("quiz") Quiz quiz,
-                                           @RequestPart("file") MultipartFile file
+                                           @RequestPart(value="file", required=false) MultipartFile file
                                     ) throws IOException {
 
         String mediaPath = quizService.saveUploadedFile(file);
@@ -54,6 +55,7 @@ public class QuizController {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiError> handleStorageFileNotFound(RuntimeException exc) {
+        exc.printStackTrace();
         ApiError error = new ApiError(exc.getMessage(), 0);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

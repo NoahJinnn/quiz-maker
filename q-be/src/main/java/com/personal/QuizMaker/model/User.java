@@ -15,6 +15,8 @@ public class User {
     private String id;
     @Indexed(unique = true)
     private String name;
+    @Indexed(unique = true)
+    private String officeId;
     int point = 0;
     @Transient
     Instant heartbeat = Instant.now();

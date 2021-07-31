@@ -34,6 +34,13 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
         return String.format("mongodb://%s:%s", getHost(), getPort());
     }
 
+    @Override
+    public MongoClient mongoClient() {
+        MongoClient mClient = MongoClients.create(getConnectionString());
+        return mClient;
+
+    }
+
     @Bean
     public MongoTemplate mongoTemplate() throws Exception {
         MongoClient mongoClient = MongoClients.create(getConnectionString());

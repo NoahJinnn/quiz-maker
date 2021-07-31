@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class AccessController {
 
     @Autowired
@@ -35,6 +36,7 @@ public class AccessController {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiError> handleStorageFileNotFound(RuntimeException exc) {
+        exc.printStackTrace();
         if(exc instanceof DuplicateNameException) {
             return new ResponseEntity<>(new ApiError(exc.getMessage() ,11000), HttpStatus.BAD_REQUEST);
         } else if(exc instanceof DuplicateKeyException) {

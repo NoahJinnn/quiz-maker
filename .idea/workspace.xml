@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2e505e5a-b78b-42e0-9ea4-1e77391df089" name="Default Changelist" comment="" />
+    <list default="true" id="2e505e5a-b78b-42e0-9ea4-1e77391df089" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/model/Heartbeat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/service/SocketService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/configs/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/configs/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/docker/QuizMaker.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/docker/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/docker/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/QuizMakerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/QuizMakerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/configuration/MongoConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/configuration/MongoConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/controller/AccessController.java" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/controller/AccessController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/controller/QuizController.java" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/controller/QuizController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/q-be/src/main/java/com/personal/QuizMaker/service/UserService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,6 +71,17 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="QuizMakerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="q-be" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.personal.QuizMaker.QuizMakerApplication" />
@@ -77,6 +101,8 @@
       <workItem from="1627481565460" duration="831000" />
       <workItem from="1627482417690" duration="3875000" />
       <workItem from="1627569862131" duration="19000" />
+      <workItem from="1627750151957" duration="12000" />
+      <workItem from="1627750296236" duration="232000" />
     </task>
     <servers />
   </component>
@@ -88,10 +114,14 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="418" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1627482213616" />
-    <state x="743" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1627569878439">
+    <state x="687" y="348" width="525" height="423" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1627750519950">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="743" y="311" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1627569878439" />
+    <state x="687" y="348" width="525" height="423" key="#com.intellij.ide.util.TreeClassChooserDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1627750519950" />
+    <state x="743" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1627750527621">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="743" y="311" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1627750527621" />
     <state width="1874" height="262" key="GridCell.Tab.0.bottom" timestamp="1627486648482">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>

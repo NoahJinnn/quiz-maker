@@ -30,7 +30,7 @@ public class QuizService {
     }
 
     public String saveUploadedFile(MultipartFile file) throws IOException {
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             byte[] bytes = file.getBytes();
             Path path = Paths.get("/home/nguyen/Desktop/" + file.getOriginalFilename());
             Files.write(path, bytes);
