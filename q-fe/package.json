@@ -11,7 +11,8 @@
     "storybook": "env-cmd -f ./.env.storybook start-storybook -p 6006 -c .storybook -s ./public"
   },
   "dependencies": {
-    "@animxyz/react": "^0.5.0",
+    "@animxyz/core": "^0.6.4",
+    "@animxyz/react": "^0.6.4",
     "@reduxjs/toolkit": "^1.6.0",
     "@storybook/react": "^6.2.3",
     "@types/lodash": "^4.14.170",

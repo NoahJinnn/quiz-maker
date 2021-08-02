@@ -28,9 +28,10 @@
       "@hooks/*": ["hooks/*"],
       "@types/*": ["types/*"],
       "@redux/*": ["states/redux/*"],
-      "@recoil/*": ["states/recoil/*"]
+      "@recoil/*": ["states/recoil/*"],
+      "@library/*": ["library/*"]
     },
-    "typeRoots": ["./types", "./node_modules/@types"],
+    "typeRoots": ["./types", "./library", "./node_modules/@types"],
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js"],

@@ -2,20 +2,20 @@
 # yarn lockfile v1
 
 
-"@animxyz/core@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@animxyz/core/-/core-0.5.0.tgz#b7b0da9ab083f67a2927650e37452b0d7d7ef317"
-  integrity sha512-sqVhE7LfCt8o94ToMP+JYXFGiGjvb+dgL8288a9La2EXH3YxZS8pdBeevlp9XX/WLT138YMD4vTXI0bDJjDSKg==
+"@animxyz/core@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@animxyz/core/-/core-0.6.4.tgz#ce828f3b349d5f18e8099a31b006a57cdbb05b93"
+  integrity sha512-6z2r1+nHY1JkOqGJIFfK1HGK4Td7lyxl2Le4oA3+JXtxl6lNg2sz2uISzv4qDHGadZQIOEYrkszP6C5mMFt5+Q==
 
-"@animxyz/react@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@animxyz/react/-/react-0.5.0.tgz#5dfa3ce40a97c9e0ba64a7661f673fb26d08dcdd"
-  integrity sha512-/67QsIXaQil4g8T4l08kyNcMM51GfSaIfXB5sOKZWcm0Xfwv64yjTO/jDhzZbfWbgejRvdYRa9+sYhmMXtHftw==
+"@animxyz/react@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@animxyz/react/-/react-0.6.4.tgz#4b93838bab850bf535abd0691c8d15a542516f83"
+  integrity sha512-6R96Yg/OleElFCct2Uew++bXzLt5eOnY0UtLN/ooYqzeFj379Shdz+HDX2ShcnM27nY+4W5fTL5kxNwvOdxUxQ==
   dependencies:
-    "@animxyz/core" "^0.5.0"
+    "@animxyz/core" "^0.6.4"
     clsx "^1.1.1"
     prop-types "^15.7.2"
-    react-transition-group "^4.4.1"
+    react-transition-group "^4.4.2"
 
 "@babel/code-frame@7.10.4":
   version "7.10.4"
@@ -9858,7 +9858,7 @@ react-textarea-autosize@^8.3.0:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
-react-transition-group@^4.4.1, react-transition-group@^4.4.2:
+react-transition-group@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
   integrity sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==

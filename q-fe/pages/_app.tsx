@@ -1,6 +1,6 @@
-import 'tachyons';
 import '../styles/globals.scss';
 import '../styles/tachyons-custom.scss';
+import '@library/haloLib/style.css';
 
 import { LayoutInit } from '@layouts/LayoutInit';
 import { store } from '@redux/store';

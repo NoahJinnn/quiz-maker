@@ -21,7 +21,7 @@ const getQuiz = async (): Promise<IQuiz | false> => {
  */
 const createQuiz = async (info: Omit<IQuiz, 'id'>, mediaFile?: File): Promise<IQuiz> => {
   const formData = new FormData();
-  formData.append('quiz', JSON.stringify(info));
+  formData.append('quiz', new Blob([JSON.stringify(info)], { type: 'application/json' }));
   if (mediaFile) {
     formData.append('file', mediaFile);
   }
@@ -42,14 +42,14 @@ const createQuiz = async (info: Omit<IQuiz, 'id'>, mediaFile?: File): Promise<IQ
  */
 const updateQuiz = async (info: IQuiz, mediaFile?: File): Promise<IQuiz> => {
   const formData = new FormData();
-  formData.append('quiz', JSON.stringify(info));
+  formData.append('quiz', new Blob([JSON.stringify(info)], { type: 'application/json' }));
   if (mediaFile) {
     formData.append('file', mediaFile);
   }
   const headers = {
     'Content-Type': 'multipart/form-data',
   };
-  const result = await axios.post<IQuiz>(`${BaseConfig.endPoint}/quizs`, formData, {
+  const result = await axios.put<IQuiz>(`${BaseConfig.endPoint}/quiz`, formData, {
     headers,
   });
   return result.data;
