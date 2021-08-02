@@ -8,4 +8,12 @@ const atomDarkMode = atom<TDarkModeStatus>({
   default: 'auto',
 });
 
-export { atomDarkMode };
+/**
+ * Current id of list
+ */
+const atomCurrentListId = atom<number>({
+  key: 'QUIZ_LIST_ID',
+  default: 0,
+});
+
+export { atomCurrentListId, atomDarkMode };
