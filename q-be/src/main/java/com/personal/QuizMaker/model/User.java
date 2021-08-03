@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Document("users")
@@ -18,6 +20,8 @@ public class User {
     @Indexed(unique = true)
     private String officeId;
     int point = 0;
+    Set<String> answeredQuizs = new HashSet<>();
+
     @Transient
     Instant heartbeat = Instant.now();
 

@@ -18,14 +18,14 @@ public class SocketService {
 
     @Autowired
     private UserService userService;
-
+    private SocketIOServer server;
     @PostConstruct
     private void init() {
         Configuration config = new Configuration();
         config.setHostname("0.0.0.0");
         config.setPort(8085);
 
-        final SocketIOServer server = new SocketIOServer(config);
+        server = new SocketIOServer(config);
         server.addEventListener("heartbeat", Heartbeat.class, new DataListener<Heartbeat>() {
             @Override
             public void onData(SocketIOClient client, Heartbeat data, AckRequest ackRequest) {
@@ -37,5 +37,10 @@ public class SocketService {
 
         server.start();
     }
+
+    public void sendMsg(Object user) {
+        server.getBroadcastOperations().sendEvent("update-user", user);
+    }
+
 }
 

@@ -1,10 +1,15 @@
 package com.personal.QuizMaker.service;
 
 import com.mongodb.WriteConcernException;
-import com.personal.QuizMaker.model.DuplicateNameException;
-import com.personal.QuizMaker.model.User;
+import com.personal.QuizMaker.model.*;
+import com.personal.QuizMaker.repository.QuizRepository;
+import com.personal.QuizMaker.repository.UserHistoryRepository;
 import com.personal.QuizMaker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +27,12 @@ public class UserService {
     private ScheduledExecutorService validator;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserHistoryRepository userHistoryRepository;
+    @Autowired
+    private QuizRepository quizRepository;
+    @Autowired
+    private SocketService socketService;
 
     @PostConstruct
     void initScheduler() {
@@ -29,14 +40,14 @@ public class UserService {
         validator.scheduleWithFixedDelay(() -> {
             long currentTime = Instant.now().toEpochMilli();
             List<String> removeIds = new ArrayList<>();
-            for(User user : userMap.values()) {
+            for (User user : userMap.values()) {
                 long userHeartbeat = user.getHeartbeat().toEpochMilli();
-                if(currentTime - userHeartbeat >= 60*1000000) {
+                if (currentTime - userHeartbeat >= 30 * 60 * 1000000) {
                     removeIds.add(user.getId());
                 }
             }
 
-            for(String id : removeIds) {
+            for (String id : removeIds) {
                 userMap.remove(id);
                 userRepository.deleteById(id);
             }
@@ -61,6 +72,10 @@ public class UserService {
     public User createUser(User user) {
         try {
             User savedUser = userRepository.save(user);
+            // Record user
+            UserHistory userHistory = new UserHistory(savedUser.getId(), savedUser, 0);
+            userHistoryRepository.save(userHistory);
+            // Add user to heartbeat map
             userMap.put(savedUser.getId(), savedUser);
             return savedUser;
         } catch (WriteConcernException ex) {
@@ -69,6 +84,29 @@ public class UserService {
             else
                 throw ex;
         }
+    }
+
+    public void updateUserPoint(AddPointDTO addPointDTO) {
+        String quizId = addPointDTO.getQuizId();
+        String userId = addPointDTO.getUserId();
+        Optional<User> userOptional = userRepository.findById(userId);
+        User user = userOptional.orElseThrow(() -> new RuntimeException("Can't find user with this id"));
+        if (user.getAnsweredQuizs().contains(quizId)) {
+            return;
+        }
+        user.getAnsweredQuizs().add(quizId);
+        int addPoint = addPointDTO.getAddPoint();
+        user.setPoint(user.getPoint() + addPoint);
+        userRepository.save(user);
+        socketService.sendMsg(user);
+
+        // Record user state
+        UserHistory userHistory = userHistoryRepository.findByUserId(userId);
+        Optional<Quiz> optionalQuiz = quizRepository.findById(quizId);
+        Quiz currentQuiz = optionalQuiz.orElseThrow(() -> new RuntimeException("Can't find current quiz"));
+        userHistory.setUser(user);
+        userHistory.setQuizListId(currentQuiz.getQuizListId());
+        userHistoryRepository.save(userHistory);
     }
 
     public Map<String, User> getUserMap() {

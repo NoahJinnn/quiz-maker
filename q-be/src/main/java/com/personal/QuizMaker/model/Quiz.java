@@ -6,7 +6,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Document("quizs")
@@ -21,5 +23,4 @@ public class Quiz {
     int timeLimit = 0;
     int point = 0;
     String mediaLink = "";
-
 }

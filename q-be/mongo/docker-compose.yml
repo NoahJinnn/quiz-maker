@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  mongo:
+    container_name: q-mongo
+    image: mongo
+    restart: always
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - /data/quiz-maker:/data

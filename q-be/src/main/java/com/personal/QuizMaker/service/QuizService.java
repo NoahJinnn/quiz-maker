@@ -29,6 +29,15 @@ public class QuizService {
         return quizRepository.save(quiz);
     }
 
+    public Quiz updateQuiz(Quiz quiz, MultipartFile file) throws IOException {
+        if(file != null) {
+            String mediaPath = saveUploadedFile(file);
+            quiz.setMediaLink(mediaPath);
+            return quizRepository.save(quiz);
+        }
+        return quizRepository.save(quiz);
+    }
+
     public String saveUploadedFile(MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {
             byte[] bytes = file.getBytes();

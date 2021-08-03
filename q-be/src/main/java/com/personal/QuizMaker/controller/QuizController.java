@@ -27,19 +27,18 @@ public class QuizController {
     public ResponseEntity<Quiz> createQuiz(@RequestPart("quiz") Quiz quiz,
                                            @RequestPart(value="file", required=false) MultipartFile file
                                     ) throws IOException {
-
-        String mediaPath = quizService.saveUploadedFile(file);
-        quiz.setMediaLink(mediaPath);
+        if(file != null) {
+            String mediaPath = quizService.saveUploadedFile(file);
+            quiz.setMediaLink(mediaPath);
+        }
         return new ResponseEntity<>(quizService.createQuiz(quiz), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/quiz", method = RequestMethod.PUT, consumes = {"multipart/form-data"})
     public ResponseEntity<Quiz> updateQuiz(@RequestPart("quiz") Quiz quiz,
-                                           @RequestPart("file") MultipartFile file
+                                           @RequestPart(value="file", required=false) MultipartFile file
     ) throws IOException {
-        String mediaPath = quizService.saveUploadedFile(file);
-        quiz.setMediaLink(mediaPath);
-        return new ResponseEntity<>(quizService.createQuiz(quiz), HttpStatus.OK);
+        return new ResponseEntity<>(quizService.updateQuiz(quiz, file), HttpStatus.OK);
     }
 
     @GetMapping("/quizs")
