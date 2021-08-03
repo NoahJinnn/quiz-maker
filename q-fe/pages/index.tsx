@@ -1,7 +1,7 @@
-import { TemplateScreen } from '@screens/__template';
+import { DashboardScreen } from '@screens/Dashboard';
 
 interface IIndexPagePageProps {}
 
-const IndexPagePage: IPageComponent<IIndexPagePageProps> = () => <TemplateScreen />;
+const IndexPagePage: IPageComponent<IIndexPagePageProps> = () => <DashboardScreen />;
 
 export default IndexPagePage;
