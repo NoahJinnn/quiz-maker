@@ -1,5 +1,4 @@
 const defaultQuiz = {
-  id: null,
   quizListId: null,
   quizContent: '',
   answers: ['', '', '', ''],

@@ -1,9 +1,13 @@
-import { updateQuiz } from '@apis/quiz';
-import { colorByIndex } from '@configs/color';
-import { Input, XyzGroup } from 'library/haloLib';
-import React, { useState } from 'react';
+import { createQuiz, deleteQuiz, getQuiz, updateQuiz } from '@apis/quiz';
+import { showToastAlert, useActionDebounce } from '@library/haloLib';
+import { atomAllQuiz, atomCurrentListId } from '@recoil/app';
+import { SpinView, XyzGroup } from 'library/haloLib';
+import { cloneDeep } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { fakeQuizs } from './common';
+import { defaultQuiz, fakeQuizs } from './common';
+import { QuizContent } from './QuizContent';
 import { QuizList } from './QuizList';
 import { QuizSetting } from './QuizSetting';
 /**
@@ -12,10 +16,14 @@ import { QuizSetting } from './QuizSetting';
 interface IScreenProps {}
 
 export const CreateScreen: IComponent<IScreenProps> = () => {
-  const [crrId, setCrrId] = useState<null | string>(null);
-  const [quiz, setQuiz] = useState<IQuiz[]>(fakeQuizs);
+  const currentListId = useRecoilValue(atomCurrentListId);
+  const [crrId, setCrrId] = useState<null | string>(fakeQuizs[0].id);
+  const [quiz, setQuiz] = useRecoilState(atomAllQuiz);
+  const [isUploading, setUploading] = useState(false);
 
-  const crrQuiz = quiz.find((v) => v.id === crrId);
+  const debounceEdit = useActionDebounce(400, true);
+
+  const crrQuiz = cloneDeep(quiz.find((v) => v.id === crrId));
 
   const handlePressQuiz = (id: string) => setCrrId(id);
 
@@ -28,10 +36,16 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
     );
   };
 
+  const callUpdateQuiz = (q: IQuiz) => {
+    debounceEdit(async () => {
+      await updateQuiz(q);
+    });
+  };
+
   const handleChangePoint = (point: number) => {
     if (crrQuiz.point !== point) {
       crrQuiz.point = point;
-      void updateQuiz(crrQuiz);
+      callUpdateQuiz(crrQuiz);
       handleUpdateCrrQuiz(crrQuiz);
     }
   };
@@ -39,64 +53,113 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
   const handleChangeQuizTime = (time: number) => {
     if (crrQuiz.timeLimit !== time) {
       crrQuiz.timeLimit = time;
-      void updateQuiz(crrQuiz);
+      callUpdateQuiz(crrQuiz);
       handleUpdateCrrQuiz(crrQuiz);
     }
+  };
+
+  const handleChangeCorrectAnswer = (idx: number) => {
+    crrQuiz.rightAnswer = idx;
+    handleUpdateCrrQuiz(crrQuiz);
+    callUpdateQuiz(crrQuiz);
   };
 
   const handleOnChageQuizContent = (ev) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     crrQuiz.quizContent = ev.target.value;
     handleUpdateCrrQuiz(crrQuiz);
+    callUpdateQuiz(crrQuiz);
   };
+
+  const updateQuizAnswer = (idx: number, content: string) => {
+    crrQuiz.answers[idx] = content;
+    handleUpdateCrrQuiz(crrQuiz);
+    callUpdateQuiz(crrQuiz);
+  };
+
+  const handlePressDel = (id: string) => {
+    void deleteQuiz(id);
+    setQuiz(quiz.filter((q) => q.id !== id));
+  };
+
+  const handlePressAdd = () => {
+    void createQuiz({
+      ...defaultQuiz,
+      quizListId: currentListId,
+      quizContent: Date.now().toString(),
+    }).then((data) => {
+      setQuiz([...quiz, data]);
+    });
+  };
+
+  const handleUploadFile = (file: File) => {
+    setUploading(true);
+    void updateQuiz(crrQuiz, file)
+      .then((data) => {
+        if (data) {
+          setQuiz(
+            quiz.map((v) => {
+              if (v.id !== crrId) return v;
+              return data;
+            })
+          );
+          setUploading(false);
+        }
+      })
+      .catch(() => {
+        showToastAlert({
+          title: 'Có lỗi xảy ra',
+          subTitle: 'Vui lòng thử lại sau',
+          duration: 3000,
+          type: 'warning',
+          position: 'top-right',
+        });
+        setUploading(false);
+      });
+  };
+
+  useEffect(() => {
+    void getQuiz().then((data) => {
+      if (data) {
+        setQuiz(data.filter((q) => q.quizListId === currentListId));
+      }
+    });
+  }, []);
 
   return (
     <div className="w-100 h-100 relative overflow-auto hover-scroll flex flex-row">
-      <QuizList crrId={crrId} quiz={quiz} onPressQuiz={handlePressQuiz} />
-      <div className="flex flex-auto flex-column pa6">
-        <Input
-          onChange={handleOnChageQuizContent}
-          value={crrQuiz.quizContent}
-          placeholder="Nhập câu hỏi"
-        />
-        <div className="flex flex-auto flex-column mt3">
-          <div className="mv3 h-50 w-100 center-items">
-            <div className="br3 ba b--dashed h-100 ph8 center-items b--gray gray pointer noselect">
-              Kéo thả hoặc chọn để thêm hình ảnh
-            </div>
-          </div>
-          <div className="mv3 flex flex-auto w-100 flex-wrap">
-            {Array(4)
-              .fill('')
-              .map((_, idx) => {
-                return (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <div key={idx} className="w-50 h-50 flex">
-                    <div className="ma2 flex-auto br3 flex flex-row overflow-hidden b--light-gray ba">
-                      <div
-                        style={{ background: colorByIndex[idx + 4] }}
-                        className="h-100 w-100 mw2 ph3 center-items white">
-                        {idx + 1}
-                      </div>
-                      <div className="flex flex-auto">
-                        <input className="h-100 w-100 bn outline-0 pa3 f7" />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-      </div>
-      <XyzGroup xyz="fade right-1" className="flex h-100">
-        {crrId && (
-          <QuizSetting
-            crrQuiz={quiz.find((v) => v.id === crrId)}
-            onChangeTime={handleChangeQuizTime}
-            onChangePoint={handleChangePoint}
+      <QuizList
+        crrId={crrId}
+        quiz={quiz}
+        onPressQuiz={handlePressQuiz}
+        onPressAdd={handlePressAdd}
+      />
+      <SpinView
+        blurContent={false}
+        isEmpty={!crrQuiz}
+        wrapperClassName="w-100"
+        placeholder="Vui lòng chọn quiz">
+        <div className="flex flex-row vh-100">
+          <QuizContent
+            crrQuiz={crrQuiz}
+            isUploading={isUploading}
+            onUploadFile={handleUploadFile}
+            updateQuizAnswer={updateQuizAnswer}
+            handleChangeCorrectAnswer={handleChangeCorrectAnswer}
+            handleOnChageQuizContent={handleOnChageQuizContent}
           />
-        )}
-      </XyzGroup>
+          <XyzGroup xyz="fade right-1" className="flex h-100">
+            {crrId && (
+              <QuizSetting
+                crrQuiz={quiz.find((v) => v.id === crrId)}
+                onChangeTime={handleChangeQuizTime}
+                onChangePoint={handleChangePoint}
+                onPressDelete={handlePressDel}
+              />
+            )}
+          </XyzGroup>
+        </div>
+      </SpinView>
     </div>
   );
 };

@@ -5,8 +5,8 @@ import axios from 'axios';
  * Get all current quizs from server
  * @returns List of quiz
  */
-const getQuiz = async (): Promise<IQuiz | false> => {
-  const data = await axios.get<IQuiz>(`${BaseConfig.endPoint}/quizs`);
+const getQuiz = async (): Promise<IQuiz[] | false> => {
+  const data = await axios.get<IQuiz[]>(`${BaseConfig.endPoint}/quizs`);
   if (data.data) {
     return data.data;
   }
@@ -28,7 +28,7 @@ const createQuiz = async (info: Omit<IQuiz, 'id'>, mediaFile?: File): Promise<IQ
   const headers = {
     'Content-Type': 'multipart/form-data',
   };
-  const result = await axios.post<IQuiz>(`${BaseConfig.endPoint}/quizs`, formData, {
+  const result = await axios.post<IQuiz>(`${BaseConfig.endPoint}/quiz`, formData, {
     headers,
   });
   return result.data;

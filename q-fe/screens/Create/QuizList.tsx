@@ -1,11 +1,19 @@
-import { cx, Icon, Tag, Tooltip, XyzGroup } from '@library/haloLib';
-import { useMemo } from 'react';
+import { cx, Icon, SpinView, Tag, Tooltip, XyzGroup } from '@library/haloLib';
+import { useEffect, useMemo, useState } from 'react';
 
-const QuizList: IComponent<{ crrId: string; onPressQuiz: (id: string) => void; quiz: IQuiz[] }> = ({
-  crrId,
-  quiz,
-  onPressQuiz,
-}) => {
+const QuizList: IComponent<{
+  crrId: string;
+  onPressQuiz: (id: string) => void;
+  quiz: IQuiz[];
+  onPressAdd?: () => void;
+}> = ({ crrId, quiz, onPressQuiz, onPressAdd }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handlePressAdd = () => {
+    setLoading(true);
+    onPressAdd?.();
+  };
+
   const renderQuiz = useMemo(() => {
     return quiz.map((q, idx) => {
       const onSel = () => onPressQuiz(q.id);
@@ -15,7 +23,7 @@ const QuizList: IComponent<{ crrId: string; onPressQuiz: (id: string) => void; q
           key={q.id}
           onClick={onSel}
           className={cx(
-            'w-100 br3 ba flex flex-column mv2 pa2 grow pointer bg-transparent tl relative',
+            'w-100 br3 ba flex flex-column mv2 pa2 scale pointer bg-transparent tl relative',
             {
               'b--gray': crrId !== q.id,
               'b--green': crrId === q.id,
@@ -37,16 +45,25 @@ const QuizList: IComponent<{ crrId: string; onPressQuiz: (id: string) => void; q
     });
   }, [quiz, crrId]);
 
+  useEffect(() => {
+    setLoading(false);
+  }, [quiz]);
+
   return (
-    <div className="h-100 overflow-auto shadow-4 pa3" style={{ width: 250 }}>
-      <p className="mv2 fw6">Danh sách</p>
-      <XyzGroup xyz="stagger-1 fade left-1" className="flex flex-column">
-        {renderQuiz}
-      </XyzGroup>
-      <div className="br3 ba b--dashed tc pv4 grow pointer b--gray center-items gray">
-        <Icon name="AddIcon" className="mr2" />
-        Thêm câu hỏi
-      </div>
+    <div className="h-100 overflow-auto shadow-4 pa3" style={{ minWidth: 250, maxWidth: 250 }}>
+      <SpinView spinning={loading} tip="Đang tải dữ liệu">
+        <p className="mv2 fw6">Danh sách</p>
+        <XyzGroup xyz="stagger-1 fade left-1" className="flex flex-column">
+          {renderQuiz}
+        </XyzGroup>
+        <button
+          type="button"
+          onClick={handlePressAdd}
+          className="br3 ba b--dashed tc pv4 scale pointer b--gray center-items gray bg-transparent w-100">
+          <Icon name="AddIcon" className="mr2" />
+          Thêm câu hỏi
+        </button>
+      </SpinView>
     </div>
   );
 };

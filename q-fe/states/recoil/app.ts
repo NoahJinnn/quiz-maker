@@ -16,4 +16,12 @@ const atomCurrentListId = atom<number>({
   default: 0,
 });
 
-export { atomCurrentListId, atomDarkMode };
+/**
+ * Store all quiz data
+ */
+const atomAllQuiz = atom<IQuiz[]>({
+  key: 'ALL_QUIZ',
+  default: [],
+});
+
+export { atomAllQuiz, atomCurrentListId, atomDarkMode };
