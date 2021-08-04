@@ -1,11 +1,12 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import TextTransition from 'react-text-transition';
+import { useRecoilValue } from 'recoil';
+
 import { addPoint, getUserList } from '@apis/user';
 import { BaseConfig } from '@configs/base';
 import { colorByIndex } from '@configs/color';
 import { cx } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import TextTransition from 'react-text-transition';
-import { useRecoilValue } from 'recoil';
 
 /**
  * Declare screen props
@@ -21,6 +22,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   const [answIdx, setAnswIdx] = useState<number | null>(null);
   const [isTheEnd, setTheEnd] = useState(false);
   const [topScore, setTopScore] = useState([312, 12312, 13241]);
+  const [users, setUsers] = useState<IUser[]>([]);
 
   const timeRef = useRef<number>(5);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -126,10 +128,11 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
           />
         </div>
         <p className="fe6">{quizInfo.quizContent}</p>
-        <div className="w-100 pa3 center-items">
+        <div className="w-100 vh-50 pa3 center-items">
           <img
+            style={{ objectFit: 'contain' }}
             alt={quizInfo.quizContent}
-            className="w-100 w-75-m w-50-l br3 ba b--light-gray"
+            className="h-100 w-100 w-75-m w-50-l br3 ba b--light-gray"
             src={`${BaseConfig.endPoint}${quizInfo.mediaLink}`}
           />
         </div>
@@ -167,6 +170,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   useEffect(() => {
     if (isTheEnd) {
       void getUserList().then((data) => {
+        setUsers(data);
         setTopScore(
           data
             .sort((a, b) => b.point - a.point)
@@ -180,7 +184,8 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   if (isTheEnd) {
     return (
       <div className="flex-auto center-items flex-column h-100 pa3">
-        <p className="fe3 b gray">Chúc mừng</p>
+        <p className="fe3 b gray">Chúc mừng bạn đã xuất sắc hoàn thành Thử thách A-thông-thái</p>
+        <p className="ma0 fe7">Hiện tại có {users.length} người tham gia</p>
         <p className="ma0 fe7">Tổng số điểm của bạn là</p>
         <p className="fe1 green fw6">{currentScore}</p>
         <div className="w-100">

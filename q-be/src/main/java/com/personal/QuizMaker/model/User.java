@@ -15,14 +15,11 @@ import java.util.Set;
 public class User {
     @Id
     private String id;
-    @Indexed(unique = true)
     private String name;
     @Indexed(unique = true)
     private String officeId;
     int point = 0;
     Set<String> answeredQuizs = new HashSet<>();
-
-    @Transient
     Instant heartbeat = Instant.now();
 
 }

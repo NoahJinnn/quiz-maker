@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserService {
 
-    private final Map<String, User> userMap = new HashMap<>();
+    private final Map<String, User> userMap = new ConcurrentHashMap<>();
     private ScheduledExecutorService validator;
     @Autowired
     private UserRepository userRepository;
@@ -38,11 +39,11 @@ public class UserService {
     void initScheduler() {
         validator = Executors.newSingleThreadScheduledExecutor();
         validator.scheduleWithFixedDelay(() -> {
-            long currentTime = Instant.now().toEpochMilli();
+            long currentTime = Instant.now().getEpochSecond();
             List<String> removeIds = new ArrayList<>();
             for (User user : userMap.values()) {
-                long userHeartbeat = user.getHeartbeat().toEpochMilli();
-                if (currentTime - userHeartbeat >= 30 * 60 * 1000000) {
+                long userHeartbeat = user.getHeartbeat().getEpochSecond();
+                if (currentTime - userHeartbeat >= 60*60) {
                     removeIds.add(user.getId());
                 }
             }
@@ -113,5 +114,18 @@ public class UserService {
         return userMap;
     }
 
+    public boolean isPlayTime() {
+        Calendar calendar = new GregorianCalendar();
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        calendar.setTimeZone(timeZone);
+        long hour = calendar.get(Calendar.HOUR_OF_DAY);
+        long min = calendar.get(Calendar.MINUTE);
+        long sec = calendar.get(Calendar.SECOND);
+        System.out.println(hour + ":" + min + ":" + sec);
+        if(hour == 16 && min < 30) {
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -1,8 +1,9 @@
+import React, { ChangeEvent, useState } from 'react';
+import { useRecoilState } from 'recoil';
+
 import { createUser } from '@apis/user';
 import { Button, Input, showToastAlert } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
-import React, { ChangeEvent, useState } from 'react';
-import { useRecoilState } from 'recoil';
 
 const LayoutPlayQuiz: IComponent = ({ children }) => {
   const [userInfo, setUserInfo] = useRecoilState(atomUserInfo);
@@ -13,7 +14,7 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
   const handleUserIdChange = (ev: ChangeEvent<HTMLInputElement>) => setUserId(ev.target.value);
 
   const handlePressStart = () => {
-    if (!userName || !userId) {
+    if (!userId) {
       showToastAlert({
         title: 'Yêu cầu',
         subTitle: 'Nhập đầy đủ thông tin',
@@ -42,18 +43,15 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
     return (
       <div className="flex h-100 w-100 center-items flex-column animate__animated animate__fadeIn">
         <p className="ma0 fe6">Điền thông tin</p>
-        <div className="pv5">
-          <p className="ma0 label gray">Tên của bạn</p>
+
+        <div className="pb5 pt5">
+          <p className="ma0 label gray">Email nhân viên</p>
           <Input
-            onChange={handleUserNameChange}
-            value={userName}
-            placeholder="Bùi Văn Tèo"
+            onChange={handleUserIdChange}
+            value={userId}
+            placeholder="Nhập đầy đủ email"
             required
           />
-        </div>
-        <div className="pb5">
-          <p className="ma0 label gray">Mã nhân viên</p>
-          <Input onChange={handleUserIdChange} value={userId} placeholder="Ex: 123899XX" required />
         </div>
         <Button primary onClick={handlePressStart}>
           Bắt đầu

@@ -16,7 +16,6 @@ public class Quiz {
     @Id
     String id;
     int quizListId = 0;
-    @Indexed(unique = true)
     String quizContent = "";
     List<String> answers = new ArrayList<>();
     int rightAnswer = 0;
