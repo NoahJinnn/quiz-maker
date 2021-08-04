@@ -4,5 +4,5 @@ interface IUser {
   officeId: string;
   point: number;
   answeredQuizs: string[];
-  heartbeat: 1628086502.697;
+  heartbeat: string;
 }

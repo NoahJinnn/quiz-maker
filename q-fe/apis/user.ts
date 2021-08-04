@@ -1,5 +1,6 @@
-import { BaseConfig } from '@configs/base';
 import axios from 'axios';
+
+import { BaseConfig } from '@configs/base';
 
 /**
  * Update current quiz

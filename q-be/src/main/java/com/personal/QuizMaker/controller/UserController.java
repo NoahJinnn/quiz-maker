@@ -1,9 +1,6 @@
 package com.personal.QuizMaker.controller;
 
-import com.personal.QuizMaker.model.AddPointDTO;
-import com.personal.QuizMaker.model.ApiError;
-import com.personal.QuizMaker.model.DuplicateNameException;
-import com.personal.QuizMaker.model.User;
+import com.personal.QuizMaker.model.*;
 import com.personal.QuizMaker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -19,6 +16,13 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/checkStart")
+    public ResponseEntity<AllowStartDTO> checkStartGame() {
+        AllowStartDTO allowStartDTO = new AllowStartDTO();
+        allowStartDTO.setAllowStart(userService.isPlayTime());
+        return new ResponseEntity<>(allowStartDTO, HttpStatus.OK);
+    }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
