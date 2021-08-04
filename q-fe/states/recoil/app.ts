@@ -24,4 +24,9 @@ const atomAllQuiz = atom<IQuiz[]>({
   default: [],
 });
 
-export { atomAllQuiz, atomCurrentListId, atomDarkMode };
+const atomUserInfo = atom<IUser | null>({
+  key: 'USER_INFO',
+  default: null,
+});
+
+export { atomAllQuiz, atomCurrentListId, atomDarkMode, atomUserInfo };

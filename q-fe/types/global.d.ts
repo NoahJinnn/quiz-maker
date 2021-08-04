@@ -12,5 +12,6 @@ interface ISvgComponentProps {
 interface IComponent<T = {}> extends React.FC<React.PropsWithChildren<T>> {}
 interface IPageComponent<T = {}> extends IComponent<T> {
   Layout?: IComponent;
+  getInitialProps?: (ctx: any) => any;
 }
 interface ISvgComponent<T = {}> extends IComponent<ISvgComponentProps & T> {}

@@ -1,4 +1,13 @@
-import { cx, Icon, SpinView, Tag, Tooltip, XyzGroup } from '@library/haloLib';
+import {
+  Button,
+  cx,
+  Icon,
+  showToastAlert,
+  SpinView,
+  Tag,
+  Tooltip,
+  XyzGroup,
+} from '@library/haloLib';
 import { useEffect, useMemo, useState } from 'react';
 
 const QuizList: IComponent<{
@@ -8,6 +17,19 @@ const QuizList: IComponent<{
   onPressAdd?: () => void;
 }> = ({ crrId, quiz, onPressQuiz, onPressAdd }) => {
   const [loading, setLoading] = useState(false);
+
+  const handleCopyLink = () => {
+    const link = `${window.location.origin}/play?listId=${quiz[0].quizListId}`;
+    void navigator.clipboard.writeText(link).then(() => {
+      showToastAlert({
+        title: 'Thành công',
+        subTitle: 'Đã copy link',
+        position: 'top-right',
+        duration: 3000,
+        type: 'success',
+      });
+    });
+  };
 
   const handlePressAdd = () => {
     setLoading(true);
@@ -52,8 +74,11 @@ const QuizList: IComponent<{
   return (
     <div className="h-100 overflow-auto shadow-4 pa3" style={{ minWidth: 250, maxWidth: 250 }}>
       <SpinView spinning={loading} tip="Đang tải dữ liệu">
+        <Button block primary onClick={handleCopyLink}>
+          Lấy link trả lời
+        </Button>
         <p className="mv2 fw6">Danh sách</p>
-        <XyzGroup xyz="stagger-1 fade left-1" className="flex flex-column">
+        <XyzGroup xyz="stagger-0.5 fade left-1" className="flex flex-column">
           {renderQuiz}
         </XyzGroup>
         <button

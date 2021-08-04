@@ -1,5 +1,6 @@
+import { BaseConfig } from '@configs/base';
 import { colorByIndex } from '@configs/color';
-import { cx, Input, SpinView, Toggle, Tooltip } from '@library/haloLib';
+import { cx, Image, Input, SpinView, Toggle, Tooltip, XyzGroup } from '@library/haloLib';
 import { ChangeEventHandler, DragEventHandler, useEffect, useRef, useState } from 'react';
 
 export const QuizContent: IComponent<{
@@ -18,11 +19,13 @@ export const QuizContent: IComponent<{
   handleChangeCorrectAnswer,
 }) => {
   const [isDragging, setDragging] = useState(false);
+  const [isHoverImage, setHoverImage] = useState(false);
   const uploadImgRef = useRef<HTMLInputElement | null>(null);
 
   const handleOnDrag: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setDragging(false);
+    setHoverImage(false);
     const droppedFiles = e.dataTransfer.files;
     if (droppedFiles.length > 0) {
       onUploadFile?.(droppedFiles.item(0));
@@ -31,10 +34,12 @@ export const QuizContent: IComponent<{
   const handleOnDragPrevent: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setDragging(true);
+    setHoverImage(true);
   };
   const handleOnDragLeave: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setDragging(false);
+    setHoverImage(false);
   };
 
   const handleUploadImage: ChangeEventHandler<HTMLInputElement> = (ev) => {
@@ -47,6 +52,9 @@ export const QuizContent: IComponent<{
   const handlePressImageUpload = () => {
     uploadImgRef.current?.click();
   };
+
+  const handleHoverImage = () => setHoverImage(true);
+  const handleBlurImage = () => setHoverImage(false);
 
   useEffect(() => {
     window.addEventListener('dragover', handleOnDragPrevent as any, false);
@@ -80,29 +88,42 @@ export const QuizContent: IComponent<{
           wrapperClassName="flex flex-auto w-100 center-items">
           <div
             aria-hidden
+            onMouseEnter={handleHoverImage}
+            onMouseLeave={handleBlurImage}
             onClick={handlePressImageUpload}
             onDrop={handleOnDrag}
             onDragOver={handleOnDragPrevent}
             onDragEnter={handleOnDragPrevent}
             onDragLeave={handleOnDragLeave}
-            className="mv3 vh-50 w-100">
+            className="mv3 w-100"
+            style={{ height: '40vh' }}>
             <div
               className={cx(
-                'br3 ba b--dashed h-100 center-items gray pointer noselect transition__faster overflow-hidden',
+                'br3 ba b--dashed h-100 center-items gray pointer noselect transition__faster overflow-hidden relative',
                 {
                   'b--gray': !isDragging,
                   'b--green': isDragging,
                 }
               )}>
-              {crrQuiz.mediaLink && (
-                <img
-                  alt={crrQuiz.id}
-                  src={crrQuiz.mediaLink}
-                  className="w-100 h-100"
-                  style={{ objectFit: 'contain' }}
-                />
+              {crrQuiz?.mediaLink && (
+                <>
+                  <XyzGroup xyz="fade down-4" className="absolute bottom-0 left-0 w-100">
+                    {isHoverImage && (
+                      <div className="w-100 bg-dark-green tc pv1 shadow-3">
+                        <p className="ma0 white label">Thêm ảnh mới</p>
+                      </div>
+                    )}
+                  </XyzGroup>
+                  <Image
+                    alt={crrQuiz.id}
+                    src={`${BaseConfig.endPoint}${crrQuiz.mediaLink}`}
+                    customClassName="w-100 h-100"
+                    customStyles={{ objectFit: 'contain' }}
+                    fallbackSrc={<span className="ph7">Kéo thả hoặc chọn để thêm hình ảnh</span>}
+                  />
+                </>
               )}
-              {!crrQuiz.mediaLink && (
+              {!crrQuiz?.mediaLink && (
                 <span className="ph7">Kéo thả hoặc chọn để thêm hình ảnh</span>
               )}
             </div>
@@ -128,7 +149,10 @@ export const QuizContent: IComponent<{
                         value={crrQuiz?.answers[idx] || ''}
                       />
                     </div>
-                    <div className="h-100 center-items ph3 bl b--light-gray">
+                    <div
+                      className={cx('h-100 center-items ph3 bl b--light-gray transition__faster', {
+                        'bg-lightest-green': crrQuiz?.rightAnswer === idx,
+                      })}>
                       <Tooltip title="Chọn câu đúng">
                         <Toggle
                           size="large"

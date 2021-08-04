@@ -9,12 +9,17 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { RecoilRoot } from 'recoil';
 
+const LayoutDefault: IComponent = ({ children }) => <>{children}</>;
+
 const MyApp = ({ Component, pageProps }: { Component: IPageComponent; pageProps: any }) => {
+  const Layout: IComponent = Component.Layout || LayoutDefault;
   return (
     <Provider store={store}>
       <RecoilRoot>
         <LayoutInit>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </LayoutInit>
       </RecoilRoot>
     </Provider>

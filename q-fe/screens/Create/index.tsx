@@ -1,10 +1,10 @@
-import { createQuiz, deleteQuiz, getQuiz, updateQuiz } from '@apis/quiz';
+import { createQuiz, deleteQuiz, updateQuiz } from '@apis/quiz';
 import { showToastAlert, useActionDebounce } from '@library/haloLib';
 import { atomAllQuiz, atomCurrentListId } from '@recoil/app';
 import { SpinView, XyzGroup } from 'library/haloLib';
 import { cloneDeep } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { defaultQuiz, fakeQuizs } from './common';
 import { QuizContent } from './QuizContent';
@@ -17,8 +17,9 @@ interface IScreenProps {}
 
 export const CreateScreen: IComponent<IScreenProps> = () => {
   const currentListId = useRecoilValue(atomCurrentListId);
+  const allQuiz = useRecoilValue(atomAllQuiz);
   const [crrId, setCrrId] = useState<null | string>(fakeQuizs[0].id);
-  const [quiz, setQuiz] = useRecoilState(atomAllQuiz);
+  const [quiz, setQuiz] = useState<IQuiz[]>([]);
   const [isUploading, setUploading] = useState(false);
 
   const debounceEdit = useActionDebounce(400, true);
@@ -43,7 +44,7 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
   };
 
   const handleChangePoint = (point: number) => {
-    if (crrQuiz.point !== point) {
+    if (crrQuiz && crrQuiz?.point !== point) {
       crrQuiz.point = point;
       callUpdateQuiz(crrQuiz);
       handleUpdateCrrQuiz(crrQuiz);
@@ -51,7 +52,7 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
   };
 
   const handleChangeQuizTime = (time: number) => {
-    if (crrQuiz.timeLimit !== time) {
+    if (crrQuiz && crrQuiz?.timeLimit !== time) {
       crrQuiz.timeLimit = time;
       callUpdateQuiz(crrQuiz);
       handleUpdateCrrQuiz(crrQuiz);
@@ -59,27 +60,38 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
   };
 
   const handleChangeCorrectAnswer = (idx: number) => {
-    crrQuiz.rightAnswer = idx;
-    handleUpdateCrrQuiz(crrQuiz);
-    callUpdateQuiz(crrQuiz);
+    if (crrQuiz) {
+      crrQuiz.rightAnswer = idx;
+      handleUpdateCrrQuiz(crrQuiz);
+      callUpdateQuiz(crrQuiz);
+    }
   };
 
   const handleOnChageQuizContent = (ev) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    crrQuiz.quizContent = ev.target.value;
-    handleUpdateCrrQuiz(crrQuiz);
-    callUpdateQuiz(crrQuiz);
+    if (crrQuiz) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      crrQuiz.quizContent = ev.target.value;
+      handleUpdateCrrQuiz(crrQuiz);
+      callUpdateQuiz(crrQuiz);
+    }
   };
 
   const updateQuizAnswer = (idx: number, content: string) => {
-    crrQuiz.answers[idx] = content;
-    handleUpdateCrrQuiz(crrQuiz);
-    callUpdateQuiz(crrQuiz);
+    if (crrQuiz) {
+      crrQuiz.answers[idx] = content;
+      handleUpdateCrrQuiz(crrQuiz);
+      callUpdateQuiz(crrQuiz);
+    }
   };
 
   const handlePressDel = (id: string) => {
-    void deleteQuiz(id);
-    setQuiz(quiz.filter((q) => q.id !== id));
+    void deleteQuiz(id).then(() => {
+      if (quiz.length === 1) {
+        window.dispatchEvent(new CustomEvent('REFRESH_QUIZ'));
+      } else {
+        setQuiz(quiz.filter((q) => q.id !== id));
+      }
+    });
   };
 
   const handlePressAdd = () => {
@@ -119,15 +131,13 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
   };
 
   useEffect(() => {
-    void getQuiz().then((data) => {
-      if (data) {
-        setQuiz(data.filter((q) => q.quizListId === currentListId));
-      }
-    });
-  }, []);
+    if (allQuiz) {
+      setQuiz(allQuiz.filter((q) => q.quizListId === currentListId));
+    }
+  }, [allQuiz, currentListId]);
 
   return (
-    <div className="w-100 h-100 relative overflow-auto hover-scroll flex flex-row">
+    <div className="w-100 flex-auto relative flex flex-row">
       <QuizList
         crrId={crrId}
         quiz={quiz}
@@ -135,11 +145,11 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
         onPressAdd={handlePressAdd}
       />
       <SpinView
-        blurContent={false}
+        blurContent
         isEmpty={!crrQuiz}
-        wrapperClassName="w-100"
-        placeholder="Vui lòng chọn quiz">
-        <div className="flex flex-row vh-100">
+        wrapperClassName="w-100 h-100 relative"
+        placeholder={<div className="w-100 h-100 center-items gray">Vui lòng chọn quiz</div>}>
+        <div className="absolute top-0 left-0 w-100 h-100 flex flex-row flex-auto">
           <QuizContent
             crrQuiz={crrQuiz}
             isUploading={isUploading}

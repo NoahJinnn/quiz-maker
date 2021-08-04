@@ -1,6 +1,6 @@
 const defaultQuiz = {
   quizListId: null,
-  quizContent: '',
+  quizContent: 'Đây là gì ?',
   answers: ['', '', '', ''],
   rightAnswer: 0,
   timeLimit: 20,
