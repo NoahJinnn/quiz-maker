@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePagination, useTable } from 'react-table';
 
-import { getUser } from '@apis/user';
+import { getUserList } from '@apis/user';
 
 import style from './index.module.scss';
 
@@ -46,7 +46,7 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
     if (fetchId === fetchIdRef.current) {
       const startRow = pageSize * pageIndex;
       const endRow = startRow + pageSize;
-      const userList = await getUser();
+      const userList = await getUserList();
       const tableData = userList
         .map(({ name, officeId, point }) => ({
           officeId,
