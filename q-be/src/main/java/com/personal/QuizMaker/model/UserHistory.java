@@ -16,10 +16,10 @@ public class UserHistory {
     @Id
     String id;
     String userId;
-    User user;
+    CopyUser user;
     int quizListId = 0;
 
-    public UserHistory(String userId, User user, int quizListId) {
+    public UserHistory(String userId, CopyUser user, int quizListId) {
         this.userId = userId;
         this.user = user;
         this.quizListId = quizListId;
