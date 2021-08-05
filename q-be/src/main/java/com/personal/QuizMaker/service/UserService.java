@@ -42,7 +42,7 @@ public class UserService {
             List<String> removeIds = new ArrayList<>();
             for (User user : userMap.values()) {
                 long userHeartbeat = user.getHeartbeat().getEpochSecond();
-                if (currentTime - userHeartbeat >= 60*60) {
+                if (currentTime - userHeartbeat >= 3*60*60) {
                     removeIds.add(user.getId());
                 }
             }
