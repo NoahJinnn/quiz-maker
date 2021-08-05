@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { usePagination, useTable } from 'react-table';
+import { io } from 'socket.io-client';
 
 import { getUserList } from '@apis/user';
 
@@ -12,9 +13,6 @@ interface IScreenProps {}
 
 export const DashboardScreen: IComponent<IScreenProps> = () => {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
-  const fetchIdRef = React.useRef(0);
 
   const columns = React.useMemo(
     () => [
@@ -35,56 +33,36 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
     []
   );
 
-  const fetchData = React.useCallback(async ({ pageSize, pageIndex }) => {
-    // Give this fetch an ID
-    const fetchId = ++fetchIdRef.current;
+  const initTableData = async () => {
+    const userList = await getUserList();
 
-    // Set the loading state
-    setLoading(true);
+    const tableData = userList
+      .map(({ id, name, officeId, point }) => ({
+        id,
+        officeId,
+        point,
+      }))
+      .sort((a, b) => b.point - a.point)
+      .map((item, idx) => ({ ...item, rank: idx + 1 }));
+    setData(tableData);
+  };
 
-    // Only update the data if this is the latest fetch
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-      const userList = await getUserList();
-      const tableData = userList
-        .map(({ name, officeId, point }) => ({
-          officeId,
-          point,
-        }))
-        .sort((a, b) => b.point - a.point)
-        .map((item, idx) => ({ ...item, rank: idx + 1 }));
-
-      const paginatedData =
-        tableData.slice(startRow, endRow).length === 0
-          ? tableData
-          : tableData.slice(startRow, endRow);
-      setData(paginatedData);
-
-      // Your server could send back total page count.
-      // For now we'll just fake it, too
-      setPageCount(Math.ceil(userList.length / pageSize));
-
-      setLoading(false);
-    }
+  useEffect(() => {
+    setInterval(() => {
+      initTableData();
+    }, 1000);
   }, []);
 
   return (
     <div className="w-100 h-100 relative overflow-auto hover-scroll center-items bg-light-yellow">
       <div className="near-black w-50 center pl3 f3 flex flex-column justify-center items-center">
-        <Table
-          columns={columns}
-          data={data}
-          fetchData={fetchData}
-          loading={loading}
-          pageCount={pageCount}
-        />
+        <Table columns={columns} data={data} />
       </div>
     </div>
   );
 };
 
-function Table({ columns, data, fetchData, loading, pageCount: controlledPageCount }) {
+function Table({ columns, data }) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -105,15 +83,10 @@ function Table({ columns, data, fetchData, loading, pageCount: controlledPageCou
       columns,
       data,
       initialState: { pageIndex: 0 }, // Pass our hoisted table state
-      manualPagination: true, // Tell the usePagination
-      pageCount: controlledPageCount,
     },
     usePagination
   );
-  useEffect(() => {
-    fetchData({ pageIndex, pageSize });
-  }, [fetchData, pageIndex, pageSize]);
-  // Render the UI for your table
+
   return (
     <div className={`flex flex-column justify-center items-center ${style['user-dashboard']}`}>
       <table {...getTableProps()}>
@@ -137,16 +110,6 @@ function Table({ columns, data, fetchData, loading, pageCount: controlledPageCou
               </tr>
             );
           })}
-          <tr>
-            {loading ? (
-              // Use our custom loading state to show a loading indicator
-              <td colSpan={10000}>Loading...</td>
-            ) : (
-              <td colSpan={10000}>
-                Showing {page.length} of ~{controlledPageCount * pageSize} results
-              </td>
-            )}
-          </tr>
         </tbody>
       </table>
       <div className="pagination pa3">
@@ -185,7 +148,7 @@ function Table({ columns, data, fetchData, loading, pageCount: controlledPageCou
           onChange={(e) => {
             setPageSize(Number(e.target.value));
           }}>
-          {[10, 50, 100, 200, 300].map((pageSize) => (
+          {[25, 50, 100, 200, 300].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

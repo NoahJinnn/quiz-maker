@@ -1,9 +1,7 @@
 package com.personal.QuizMaker.service;
 
-import com.corundumstudio.socketio.AckRequest;
-import com.corundumstudio.socketio.Configuration;
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
+import com.corundumstudio.socketio.*;
+import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.personal.QuizMaker.model.Heartbeat;
 import com.personal.QuizMaker.model.User;
@@ -19,13 +17,24 @@ public class SocketService {
     @Autowired
     private UserService userService;
     private SocketIOServer server;
+
     @PostConstruct
     private void init() {
         Configuration config = new Configuration();
         config.setHostname("0.0.0.0");
         config.setPort(8085);
-
+        SocketConfig socketConfig = new SocketConfig();
+        socketConfig.setReuseAddress(true);
+        config.setSocketConfig(socketConfig);
         server = new SocketIOServer(config);
+
+        server.addConnectListener(new ConnectListener() {
+            @Override
+            public void onConnect(SocketIOClient socketIOClient) {
+                System.out.println(socketIOClient.getRemoteAddress().toString());
+            }
+        });
+
         server.addEventListener("heartbeat", Heartbeat.class, new DataListener<Heartbeat>() {
             @Override
             public void onData(SocketIOClient client, Heartbeat data, AckRequest ackRequest) {
@@ -39,7 +48,9 @@ public class SocketService {
     }
 
     public void sendMsg(Object user) {
-        server.getBroadcastOperations().sendEvent("update-user", user);
+        for (SocketIOClient client : server.getAllClients()) {
+            client.sendEvent("update-user", user);
+        }
     }
 
 }
