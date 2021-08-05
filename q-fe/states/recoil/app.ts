@@ -13,7 +13,7 @@ const atomDarkMode = atom<TDarkModeStatus>({
  */
 const atomCurrentListId = atom<number>({
   key: 'QUIZ_LIST_ID',
-  default: 0,
+  default: -1,
 });
 
 /**

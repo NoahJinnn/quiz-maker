@@ -12,6 +12,10 @@ const LayoutListQuiz: IComponent = ({ children }) => {
   const handleRefesh = () => {
     void getQuiz().then((data) => {
       if (data) {
+        const quizData = data.filter((q) => q.quizListId === listId);
+        if (quizData.length === 0) {
+          setListId(data[0].quizListId);
+        }
         setQuiz(data);
       }
     });
@@ -43,11 +47,7 @@ const LayoutListQuiz: IComponent = ({ children }) => {
   };
 
   useEffect(() => {
-    void getQuiz().then((data) => {
-      if (data) {
-        setQuiz(data);
-      }
-    });
+    handleRefesh();
   }, []);
 
   const renderQuizListOption = useMemo(() => {
@@ -57,13 +57,22 @@ const LayoutListQuiz: IComponent = ({ children }) => {
         listIds.push(q.quizListId);
       }
     });
-    return listIds.map((id, idx) => {
-      return (
-        <Option key={id} value={id}>
-          Bộ câu {idx + 1}
-        </Option>
-      );
-    });
+    return (
+      <Select
+        className="miw5"
+        defaultValue={0}
+        value={listId}
+        items={[quiz, listId]}
+        onChange={handleOnChangeListId}>
+        {listIds.map((id, idx) => {
+          return (
+            <Option key={id} value={id}>
+              Bộ câu {idx + 1}
+            </Option>
+          );
+        })}
+      </Select>
+    );
   }, [quiz, listId]);
 
   useEffect(() => {
@@ -78,16 +87,7 @@ const LayoutListQuiz: IComponent = ({ children }) => {
           <span className="fw6">EZ</span>Quiz
         </p>
         <div className="flex-auto" />
-        <Select
-          className="miw5"
-          value={listId}
-          items={[quiz, listId]}
-          onChange={handleOnChangeListId}>
-          {renderQuizListOption}
-          <Option key="new" value="new">
-            Tạo bộ mới
-          </Option>
-        </Select>
+        {renderQuizListOption}
       </div>
       {children}
     </div>

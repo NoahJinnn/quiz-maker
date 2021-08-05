@@ -1,16 +1,15 @@
-import React, { ChangeEvent, useState } from 'react';
-import { useRecoilState } from 'recoil';
-
 import { createUser } from '@apis/user';
 import { Button, Input, showToastAlert } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
+import React, { ChangeEvent, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 const LayoutPlayQuiz: IComponent = ({ children }) => {
   const [userInfo, setUserInfo] = useRecoilState(atomUserInfo);
-  const [userName, setUserName] = useState('');
+  // const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
 
-  const handleUserNameChange = (ev: ChangeEvent<HTMLInputElement>) => setUserName(ev.target.value);
+  // const handleUserNameChange = (ev: ChangeEvent<HTMLInputElement>) => setUserName(ev.target.value);
   const handleUserIdChange = (ev: ChangeEvent<HTMLInputElement>) => setUserId(ev.target.value);
 
   const handlePressStart = () => {
@@ -24,7 +23,7 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
       });
       return;
     }
-    void createUser(userName, userId)
+    void createUser('', userId)
       .then((data) => {
         setUserInfo(data);
       })
@@ -42,10 +41,9 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
   if (!userInfo) {
     return (
       <div className="flex h-100 w-100 center-items flex-column animate__animated animate__fadeIn">
-        <p className="ma0 fe6">Điền thông tin</p>
-
+        <p className="ma0 fe3 fw6 tc">Cho mình xin thông tin nhé!</p>
+        <p className="ma0 fe5 tc">Vui lòng điền email nhân viên</p>
         <div className="pb5 pt5">
-          <p className="ma0 label gray">Email nhân viên</p>
           <Input
             onChange={handleUserIdChange}
             value={userId}
@@ -53,7 +51,7 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
             required
           />
         </div>
-        <Button primary onClick={handlePressStart}>
+        <Button customClassName="fe5" primary type="info" size="medium" onClick={handlePressStart}>
           Bắt đầu
         </Button>
       </div>

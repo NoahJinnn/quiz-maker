@@ -98,7 +98,7 @@ export const CreateScreen: IComponent<IScreenProps> = () => {
     void createQuiz({
       ...defaultQuiz,
       quizListId: currentListId,
-      quizContent: Date.now().toString(),
+      // quizContent: Date.now().toString(),
     }).then((data) => {
       setQuiz([...quiz, data]);
     });

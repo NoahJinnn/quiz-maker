@@ -1,12 +1,11 @@
+import { addPoint, getUserList } from '@apis/user';
+import { BaseConfig } from '@configs/base';
+import { answerColors } from '@configs/color';
+import { Button, cx } from '@library/haloLib';
+import { atomUserInfo } from '@recoil/app';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import TextTransition from 'react-text-transition';
 import { useRecoilValue } from 'recoil';
-
-import { addPoint, getUserList } from '@apis/user';
-import { BaseConfig } from '@configs/base';
-import { colorByIndex } from '@configs/color';
-import { cx } from '@library/haloLib';
-import { atomUserInfo } from '@recoil/app';
 
 /**
  * Declare screen props
@@ -22,7 +21,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   const [answIdx, setAnswIdx] = useState<number | null>(null);
   const [isTheEnd, setTheEnd] = useState(false);
   const [topScore, setTopScore] = useState([312, 12312, 13241]);
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [, setUsers] = useState<IUser[]>([]);
 
   const timeRef = useRef<number>(5);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -30,10 +29,9 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   const [currentScore, setCurrentScore] = useState(0);
 
   const getPointPercent = (point: number, quizTime) => {
-    const percent = (time * 100) / quizTime;
-    if (percent > 80) return point;
-    if (percent > 30) return point / 2;
-    return point / 4;
+    const percent = time / quizTime;
+
+    return percent * point;
   };
 
   const handleNextQuest = () => {
@@ -54,6 +52,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
     setAnswIdx(idx);
     const quizInfo = quiz[currentIdxCard];
     if (quizInfo.rightAnswer === idx) {
+      window.dispatchEvent(new CustomEvent('RIGHT'));
       const addScore = getPointPercent(quizInfo.point, quizInfo.timeLimit);
       setCurrentScore((prev) => prev + addScore);
       void addPoint({
@@ -62,6 +61,19 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
         quizListId: quizInfo.quizListId,
         addPoint: addScore,
       });
+    } else {
+      window.dispatchEvent(new CustomEvent('WRONG'));
+    }
+  };
+
+  const timeoutMTF = () => {
+    if (currentIdxCard === -1) {
+      setCurrentIdxCard(currentIdxCard + 1);
+      setAnswIdx(null);
+      answIdxRef.current = null;
+    } else {
+      answIdxRef.current = 5;
+      setAnswIdx(5);
     }
   };
 
@@ -70,15 +82,17 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
       return;
     }
     answIdxRef.current = -2;
-    setTimeout(() => {
-      handleNextQuest();
-    }, 1500);
+    // setTimeout(() => {
+    //   handleNextQuest();
+    // }, 1500);
   };
 
   useEffect(() => {
-    if (quiz[currentIdxCard]) {
+    if (quiz && quiz[currentIdxCard]) {
       setTime(quiz[currentIdxCard].timeLimit);
-      timeRef.current = quiz[currentIdxCard].timeLimit;
+      if (quiz[currentIdxCard]) {
+        timeRef.current = quiz[currentIdxCard].timeLimit;
+      }
     }
     timerRef.current = setInterval(() => {
       if (answIdxRef.current !== null) {
@@ -86,14 +100,14 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
         return;
       }
       if (timeRef.current <= 0) {
-        handleNextQuest();
+        // handleNextQuest();
+        timeoutMTF();
       }
       if (timeRef.current > 0) {
         setTime((prev) => prev - 1);
         timeRef.current -= 1;
       }
     }, 1000);
-
     return () => {
       clearInterval(timerRef.current);
     };
@@ -127,8 +141,8 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
             }}
           />
         </div>
-        <p className="fe6">{quizInfo.quizContent}</p>
-        <div className="w-100 vh-50 pa3 center-items">
+        <p className="fe4-ns f6 tc ph3 fw6">{quizInfo.quizContent}</p>
+        <div className="w-100 vh-50 pa3 center-items" style={{ minHeight: '50vh' }}>
           <img
             style={{ objectFit: 'contain' }}
             alt={quizInfo.quizContent}
@@ -136,13 +150,23 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
             src={`${BaseConfig.endPoint}${quizInfo.mediaLink}`}
           />
         </div>
-        <div className="flex flex-auto flex-wrap w-100 h-100">
+        <div className="flex flex-auto flex-wrap w-100 h-100 relative center-items">
+          {answIdx !== null && (
+            <div className="absolute h-100 w-100 bg-white-40 center-items animate__animated animate__fadeIn">
+              <div className="fe7">
+                <Button primary type="info" size="large" onClick={handleNextQuest}>
+                  Câu hỏi tiếp theo
+                </Button>
+              </div>
+            </div>
+          )}
+
           {Array(4)
             .fill('')
             .map((_, idx) => {
-              let colorBackground = colorByIndex[idx + 4];
-              if (answIdx === idx) {
-                colorBackground = answIdx === quizInfo.rightAnswer ? 'green' : 'red';
+              let colorBackground = answerColors[idx];
+              if (answIdx !== null) {
+                colorBackground = idx === quizInfo.rightAnswer ? 'green' : '#FE7161';
               }
               return (
                 // eslint-disable-next-line react/no-array-index-key
@@ -150,13 +174,13 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
                   <button
                     type="button"
                     onClick={() => handleOnAnswerCard(idx)}
-                    className="ma2 flex-auto br3 flex flex-row overflow-hidden b--light-gray ba shadow-3 scale bn bg-transparent pa0">
+                    className="ma2 flex-auto br3 flex flex-row overflow-hidden b--light-gray ba shadow-3 scale bn bg-transparent pa0 pointer">
                     <div
                       className="flex flex-auto center-items white fw6 h-100"
                       style={{
                         background: colorBackground,
                       }}>
-                      <p>{quizInfo.answers[idx]}</p>
+                      <p className="fe7 fe6-m fe5-l">{quizInfo.answers[idx]}</p>
                     </div>
                   </button>
                 </div>
@@ -181,23 +205,35 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
     }
   }, [isTheEnd]);
 
+  if (!quiz || quiz.length === 0) {
+    return (
+      <div className="flex-auto h-100 center-items fe7 gray">
+        <p>Màn chơi không tồn tại</p>
+      </div>
+    );
+  }
+
   if (isTheEnd) {
     return (
       <div className="flex-auto center-items flex-column h-100 pa3">
-        <p className="fe3 b gray">Chúc mừng bạn đã xuất sắc hoàn thành Thử thách A-thông-thái</p>
-        <p className="ma0 fe7">Hiện tại có {users.length} người tham gia</p>
-        <p className="ma0 fe7">Tổng số điểm của bạn là</p>
-        <p className="fe1 green fw6">{currentScore}</p>
+        <p className="fe2-ns fe7 b gray tc">
+          Chúc mừng bạn đã xuất sắc hoàn thành Thử thách A-thông-thái
+        </p>
+        {/* <p className="ma0 fe7">Hiện tại có {users.length} người tham gia</p> */}
+        <p className="ma0 fe7 fe5-ns">Tổng số điểm của bạn là</p>
+        <p style={{ fontSize: 64, color: '#004EDA' }} className="fw6">
+          {currentScore}
+        </p>
         <div className="w-100">
-          <p className="label">TOP SCORE</p>
+          <p className="label fe7 fe4-ns">Điểm số cao nhất hiện tại là</p>
           {topScore.map((score, idx) => {
             return (
               <div
                 // eslint-disable-next-line react/no-array-index-key
                 key={idx}
-                className="flex w-100 flex-row ph3"
+                className="flex w-100 flex-row ph3 fe7 fe4-ns"
                 style={{ background: idx % 2 === 0 ? '#eee' : 'transparent' }}>
-                <p>TOP {idx + 1}</p>
+                <p>A-thông-thái {idx + 1}</p>
                 <div className="flex-auto" />
                 <p>{score}</p>
               </div>

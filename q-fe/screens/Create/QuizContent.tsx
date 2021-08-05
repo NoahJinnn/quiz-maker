@@ -1,5 +1,5 @@
 import { BaseConfig } from '@configs/base';
-import { colorByIndex } from '@configs/color';
+import { answerColors } from '@configs/color';
 import { cx, Image, Input, SpinView, Toggle, Tooltip, XyzGroup } from '@library/haloLib';
 import { ChangeEventHandler, DragEventHandler, useEffect, useRef, useState } from 'react';
 
@@ -117,7 +117,7 @@ export const QuizContent: IComponent<{
                   <Image
                     alt={crrQuiz.id}
                     src={`${BaseConfig.endPoint}${crrQuiz.mediaLink}`}
-                    customClassName="w-100 h-100"
+                    customClassName="w-100 h-100 miw6"
                     customStyles={{ objectFit: 'contain' }}
                     fallbackSrc={<span className="ph7">Kéo thả hoặc chọn để thêm hình ảnh</span>}
                   />
@@ -138,7 +138,7 @@ export const QuizContent: IComponent<{
                 <div key={idx} className="w-50 h-50 flex">
                   <div className="ma2 flex-auto br3 flex flex-row overflow-hidden b--light-gray ba">
                     <div
-                      style={{ background: colorByIndex[idx + 4] }}
+                      style={{ background: answerColors[idx] }}
                       className="h-100 w-100 mw2 ph3 center-items white">
                       {idx + 1}
                     </div>

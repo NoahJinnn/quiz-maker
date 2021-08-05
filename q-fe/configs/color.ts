@@ -28,3 +28,5 @@ export const colorByLetter = {
 };
 
 export const colorByIndex = Object.values(colorByLetter);
+
+export const answerColors = ['#E21B3C', '#1167CC', '#D89E00', '#26890B'];
