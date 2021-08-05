@@ -32,8 +32,7 @@ public class UserService {
     private UserHistoryRepository userHistoryRepository;
     @Autowired
     private QuizRepository quizRepository;
-    @Autowired
-    private SocketService socketService;
+
 
     @PostConstruct
     void initScheduler() {
@@ -43,7 +42,7 @@ public class UserService {
             List<String> removeIds = new ArrayList<>();
             for (User user : userMap.values()) {
                 long userHeartbeat = user.getHeartbeat().getEpochSecond();
-                if (currentTime - userHeartbeat >= 60*60) {
+                if (currentTime - userHeartbeat >= 3*60*60) {
                     removeIds.add(user.getId());
                 }
             }
@@ -74,7 +73,12 @@ public class UserService {
         try {
             User savedUser = userRepository.save(user);
             // Record user
-            UserHistory userHistory = new UserHistory(savedUser.getId(), savedUser, 0);
+            CopyUser copyUser = CopyUser.builder().id(savedUser.getId())
+                                                    .officeId(savedUser.getOfficeId())
+                                                    .point(savedUser.getPoint())
+                                                    .answeredQuizs(savedUser.getAnsweredQuizs())
+                                                    .build();
+            UserHistory userHistory = new UserHistory(savedUser.getId(), copyUser, 0);
             userHistoryRepository.save(userHistory);
             // Add user to heartbeat map
             userMap.put(savedUser.getId(), savedUser);
@@ -99,13 +103,17 @@ public class UserService {
         int addPoint = addPointDTO.getAddPoint();
         user.setPoint(user.getPoint() + addPoint);
         userRepository.save(user);
-        socketService.sendMsg(user);
 
         // Record user state
         UserHistory userHistory = userHistoryRepository.findByUserId(userId);
         Optional<Quiz> optionalQuiz = quizRepository.findById(quizId);
         Quiz currentQuiz = optionalQuiz.orElseThrow(() -> new RuntimeException("Can't find current quiz"));
-        userHistory.setUser(user);
+        CopyUser copyUser = CopyUser.builder().id(user.getId())
+                .officeId(user.getOfficeId())
+                .point(user.getPoint())
+                .answeredQuizs(user.getAnsweredQuizs())
+                .build();
+        userHistory.setUser(copyUser);
         userHistory.setQuizListId(currentQuiz.getQuizListId());
         userHistoryRepository.save(userHistory);
     }
