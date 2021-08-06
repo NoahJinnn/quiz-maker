@@ -31,7 +31,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   const getPointPercent = (point: number, quizTime) => {
     const percent = time / quizTime;
 
-    return percent * point;
+    return Math.round(percent * point);
   };
 
   const handleNextQuest = () => {
@@ -74,6 +74,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
     } else {
       answIdxRef.current = 5;
       setAnswIdx(5);
+      window.dispatchEvent(new CustomEvent('WRONG'));
     }
   };
 
@@ -82,6 +83,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
       return;
     }
     answIdxRef.current = -2;
+    setAnswIdx(-2);
     // setTimeout(() => {
     //   handleNextQuest();
     // }, 1500);
@@ -104,10 +106,10 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
         timeoutMTF();
       }
       if (timeRef.current > 0) {
-        setTime((prev) => prev - 1);
-        timeRef.current -= 1;
+        setTime((prev) => prev - 0.2);
+        timeRef.current -= 0.2;
       }
-    }, 1000);
+    }, 200);
     return () => {
       clearInterval(timerRef.current);
     };
@@ -118,7 +120,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
       return (
         <div className="flex flex-auto center-items flex-column">
           <h4>Bắt đầu trong</h4>
-          <span className="fe4 fw6 gray">{time}</span>
+          <span className="fe4 fw6 gray">{Math.round(time)}</span>
         </div>
       );
     }
@@ -142,7 +144,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
           />
         </div>
         <p className="fe4-ns f6 tc ph3 fw6">{quizInfo.quizContent}</p>
-        <div className="w-100 vh-50 pa3 center-items" style={{ minHeight: '50vh' }}>
+        <div className="w-100 flex-auto pa3 center-items" style={{ minHeight: '50vh' }}>
           <img
             style={{ objectFit: 'contain' }}
             alt={quizInfo.quizContent}
@@ -150,7 +152,9 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
             src={`${BaseConfig.endPoint}${quizInfo.mediaLink}`}
           />
         </div>
-        <div className="flex flex-auto flex-wrap w-100 h-100 relative center-items">
+        <div
+          className="flex flex-auto flex-wrap w-100 h-100 relative center-items"
+          style={{ minHeight: 120 }}>
           {answIdx !== null && (
             <div className="absolute h-100 w-100 bg-white-40 center-items animate__animated animate__fadeIn">
               <div className="fe7">
@@ -160,7 +164,6 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
               </div>
             </div>
           )}
-
           {Array(4)
             .fill('')
             .map((_, idx) => {
@@ -215,7 +218,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
 
   if (isTheEnd) {
     return (
-      <div className="flex-auto center-items flex-column h-100 pa3">
+      <div className="w-100 center-items flex-column vh-100 overflow-auto pa3">
         <p className="fe2-ns fe7 b gray tc">
           Chúc mừng bạn đã xuất sắc hoàn thành Thử thách A-thông-thái
         </p>
