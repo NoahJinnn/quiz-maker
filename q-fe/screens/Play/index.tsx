@@ -1,11 +1,12 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import TextTransition from 'react-text-transition';
+import { useRecoilValue } from 'recoil';
+
 import { addPoint, getUserList } from '@apis/user';
 import { BaseConfig } from '@configs/base';
 import { answerColors } from '@configs/color';
 import { Button, cx } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import TextTransition from 'react-text-transition';
-import { useRecoilValue } from 'recoil';
 
 /**
  * Declare screen props
@@ -21,7 +22,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   const [answIdx, setAnswIdx] = useState<number | null>(null);
   const [isTheEnd, setTheEnd] = useState(false);
   const [topScore, setTopScore] = useState([312, 12312, 13241]);
-  const [, setUsers] = useState<IUser[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
 
   const timeRef = useRef<number>(5);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -115,6 +116,12 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
     };
   }, [currentIdxCard]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('BACKGROUND'));
+    }, 3000);
+  }, []);
+
   const renderGame = useMemo(() => {
     if (currentIdxCard === -1) {
       return (
@@ -156,7 +163,9 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
           className="flex flex-auto flex-wrap w-100 h-100 relative center-items"
           style={{ minHeight: 120 }}>
           {answIdx !== null && (
-            <div className="absolute h-100 w-100 bg-white-40 center-items animate__animated animate__fadeIn">
+            <div
+              style={{ top: '-150%' }}
+              className="absolute pr8 h-100 w-100 bg-white-40 flex justify-end animate__animated animate__fadeIn">
               <div className="fe7">
                 <Button primary type="info" size="large" onClick={handleNextQuest}>
                   Câu hỏi tiếp theo
@@ -219,16 +228,18 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   if (isTheEnd) {
     return (
       <div className="w-100 center-items flex-column vh-100 overflow-auto pa3">
+        <p className="fe2-ns fe7 b gray tc">Chúc mừng bạn đã xuất sắc hoàn thành thử thách.</p>
         <p className="fe2-ns fe7 b gray tc">
-          Chúc mừng bạn đã xuất sắc hoàn thành Thử thách A-thông-thái
+          {' '}
+          Điểm Thông thái của bạn là{' '}
+          <span style={{ fontSize: 64, color: '#004EDA' }}>{currentScore}</span>
         </p>
-        {/* <p className="ma0 fe7">Hiện tại có {users.length} người tham gia</p> */}
-        <p className="ma0 fe7 fe5-ns">Tổng số điểm của bạn là</p>
-        <p style={{ fontSize: 64, color: '#004EDA' }} className="fw6">
-          {currentScore}
-        </p>
+
         <div className="w-100">
-          <p className="label fe7 fe4-ns">Điểm số cao nhất hiện tại là</p>
+          <p className="label fe7 fe4-ns">
+            Hiện đang có {users.length} Aviva-er cùng bạn tham gia chặng đấu này, với 3 chiến binh
+            "Thông thái" dẫn đầu là:
+          </p>
           {topScore.map((score, idx) => {
             return (
               <div

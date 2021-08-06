@@ -1,8 +1,10 @@
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+
 import { createUser } from '@apis/user';
 import { Button, Input, showToastAlert } from '@library/haloLib';
+import { typeRule } from '@library/haloLib/utils/validator/validators/type';
 import { atomUserInfo } from '@recoil/app';
-import React, { ChangeEvent, useState } from 'react';
-import { useRecoilState } from 'recoil';
 
 const LayoutPlayQuiz: IComponent = ({ children }) => {
   const [userInfo, setUserInfo] = useRecoilState(atomUserInfo);
@@ -38,11 +40,28 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
       });
   };
 
+  useEffect(() => {
+    const audio: HTMLAudioElement = document.getElementById('bgSound') as any;
+    audio.volume = 0.5;
+    if (audio) {
+      document.body.addEventListener('mousemove', function () {
+        try {
+          audio.play();
+        } catch (error) {}
+      });
+    }
+  }, []);
+
   if (!userInfo) {
     return (
       <div className="flex h-100 w-100 center-items flex-column animate__animated animate__fadeIn">
-        <p className="ma0 fe3 fw6 tc">Cho mình xin thông tin nhé!</p>
-        <p className="ma0 fe5 tc">Vui lòng điền email nhân viên</p>
+        <p className="ma0 mw8 fe3 fw6 tc pb3">
+          Tiếp nối hoạt động A-tươi-mới, đổi khung ảnh đại diện để lan tỏa thông điệp Tin Yêu trên
+          Facebook, chào mừng bạn đến với hoạt động thứ 2 mừng Sinh nhật Aviva lên 4 - A-thông-thái
+        </p>
+        <p className="ma0 fe5 tc">
+          Hãy điền email để tham gia thể hiện sự Thông thái của bạn đi nào!
+        </p>
         <div className="pb5 pt5">
           <Input
             onChange={handleUserIdChange}
