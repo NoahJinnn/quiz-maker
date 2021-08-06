@@ -54,8 +54,8 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
   }, []);
 
   return (
-    <div className="w-100 h-100 relative overflow-auto hover-scroll center-items bg-light-yellow">
-      <div className="near-black w-50 center pl3 f3 flex flex-column justify-center items-center">
+    <div className="w-100 h-100 relative overflow-auto hover-scroll bg-light-yellow overflow-y-auto">
+      <div className={`near-black w-50 center pl3 f3 flex flex-column justify-center items-center`}>
         <Table columns={columns} data={data} />
       </div>
     </div>
@@ -80,6 +80,7 @@ function Table({ columns, data }) {
     state: { pageIndex, pageSize },
   } = useTable(
     {
+      autoResetPage: false,
       columns,
       data,
       initialState: { pageIndex: 0 }, // Pass our hoisted table state
