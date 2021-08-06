@@ -136,4 +136,8 @@ public class UserService {
         return false;
     }
 
+    public void removeAllUsers() {
+        userRepository.deleteAll();;
+    }
+
 }

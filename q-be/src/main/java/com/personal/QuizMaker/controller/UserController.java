@@ -45,6 +45,12 @@ public class UserController {
         return new ResponseEntity<>("Update success", HttpStatus.OK);
     }
 
+    @DeleteMapping("/allUsers")
+    public ResponseEntity<String> removeAll() {
+        userService.removeAllUsers();
+        return new ResponseEntity<>("Remove success", HttpStatus.OK);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiError> handleStorageFileNotFound(RuntimeException exc) {
         exc.printStackTrace();
