@@ -1,9 +1,10 @@
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useRecoilState } from 'recoil';
+
 import { createUser } from '@apis/user';
 import { Background, Map1Content } from '@components/Background';
 import { Button, Input, showToastAlert } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
 
 const LayoutPlayQuiz: IComponent = ({ children }) => {
   const [userInfo, setUserInfo] = useRecoilState(atomUserInfo);
@@ -34,8 +35,8 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
       })
       .catch(() => {
         showToastAlert({
-          title: 'Có lỗi xảy ra',
-          subTitle: 'Email nhập đã thực hiện màn chơi!',
+          title: 'Email đã thực hiện vòng chơi!',
+          subTitle: 'Vui lòng nhập 1 email khác',
           duration: 3000,
           position: 'top-right',
           type: 'warning',
