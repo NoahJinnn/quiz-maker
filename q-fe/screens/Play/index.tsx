@@ -165,7 +165,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
           {answIdx !== null && (
             <div
               style={{ top: '-150%' }}
-              className="absolute pr8 h-100 w-100 bg-white-40 flex justify-end animate__animated animate__fadeIn">
+              className="absolute pr8 h-100 w-100 flex justify-end animate__animated animate__fadeIn">
               <div className="fe7">
                 <Button primary type="info" size="large" onClick={handleNextQuest}>
                   Câu hỏi tiếp theo
