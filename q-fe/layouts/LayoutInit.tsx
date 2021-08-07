@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
-
 /* eslint-disable jsx-a11y/media-has-caption */
 import { AlertToastContainer, Portal } from '@library/haloLib';
+import React, { useEffect } from 'react';
 
 const LayoutInit: IComponent = ({ children }) => {
   const playRight = () => {

@@ -1,12 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import TextTransition from 'react-text-transition';
-import { useRecoilValue } from 'recoil';
-
 import { addPoint, getUserList } from '@apis/user';
 import { BaseConfig } from '@configs/base';
 import { answerColors } from '@configs/color';
 import { Button, cx } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import TextTransition from 'react-text-transition';
+import { useRecoilValue } from 'recoil';
 
 /**
  * Declare screen props
@@ -107,10 +106,10 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
         timeoutMTF();
       }
       if (timeRef.current > 0) {
-        setTime((prev) => prev - 0.2);
-        timeRef.current -= 0.2;
+        setTime((prev) => prev - 0.1);
+        timeRef.current -= 0.1;
       }
-    }, 200);
+    }, 100);
     return () => {
       clearInterval(timerRef.current);
     };
