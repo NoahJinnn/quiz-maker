@@ -93,8 +93,7 @@ function Table({ columns, data }) {
     usePagination
   );
 
-  const [showModal, setShowModal] = useState(true);
-  // const [officeId, setOfficeId] = useState('abc');
+  const [showModal, setShowModal] = useState(false);
 
   const onConfirm = () => {
     deleteUserByOfficeId(officeId);
