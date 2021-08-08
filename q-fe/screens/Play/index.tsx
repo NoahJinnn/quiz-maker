@@ -150,21 +150,15 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
           />
         </div>
         <p className="fe4-ns f6 tc ph3 fw6">{quizInfo.quizContent}</p>
-        <div className="w-100 flex-auto pa3 center-items" style={{ minHeight: '50vh' }}>
+        <div className="w-100 flex-auto pa3 center-items">
           <img
             style={{ objectFit: 'contain' }}
             alt={quizInfo.quizContent}
-            className="h-100 w-100 w-75-m w-50-l br3 ba b--light-gray"
+            className="h-100 br3 ba b--light-gray"
             src={`${BaseConfig.endPoint}${quizInfo.mediaLink}`}
           />
-        </div>
-        <div
-          className="flex flex-auto flex-wrap w-100 h-100 relative center-items"
-          style={{ minHeight: 120 }}>
           {answIdx !== null && (
-            <div
-              style={{ top: '-150%' }}
-              className="absolute pr8 h-100 w-100 flex justify-end animate__animated animate__fadeIn">
+            <div className="absolute flex justify-end animate__animated animate__fadeIn right-2">
               <div className="fe7">
                 <Button primary type="info" size="large" onClick={handleNextQuest}>
                   Câu hỏi tiếp theo
@@ -172,6 +166,10 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
               </div>
             </div>
           )}
+        </div>
+        <div
+          className="flex flex-auto flex-wrap w-100 h-100 relative center-items"
+          style={{ minHeight: 120 }}>
           {Array(4)
             .fill('')
             .map((_, idx) => {

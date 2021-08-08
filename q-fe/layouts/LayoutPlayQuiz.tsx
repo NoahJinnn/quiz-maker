@@ -1,10 +1,9 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
-
 import { createUser } from '@apis/user';
 import { Background, Map1Content } from '@components/Background';
 import { Button, Input, showToastAlert } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 const LayoutPlayQuiz: IComponent = ({ children }) => {
   const [userInfo, setUserInfo] = useRecoilState(atomUserInfo);
