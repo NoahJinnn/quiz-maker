@@ -37,7 +37,7 @@ const getUserList = async () => {
 };
 
 const deleteUserByOfficeId = async (officeId: string): Promise<IUser> => {
-  const data = await axios.delete<IUser>(`${BaseConfig.endPoint}/user?=${officeId}`);
+  const data = await axios.delete<IUser>(`${BaseConfig.endPoint}/user?officeId=${officeId}`);
   return data.data;
 };
 
