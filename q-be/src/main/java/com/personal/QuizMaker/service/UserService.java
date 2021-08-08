@@ -140,4 +140,8 @@ public class UserService {
         userRepository.deleteAll();;
     }
 
+    public void removeByOfficeId(String officeId) {
+        userRepository.deleteByOfficeId(officeId);
+    }
+
 }
