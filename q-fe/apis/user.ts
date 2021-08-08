@@ -36,4 +36,9 @@ const getUserList = async () => {
   return data.data;
 };
 
-export { addPoint, createUser, getUserList };
+const deleteUserByOfficeId = async (officeId: string): Promise<IUser> => {
+  const data = await axios.delete<IUser>(`${BaseConfig.endPoint}/user?=${officeId}`);
+  return data.data;
+};
+
+export { addPoint, createUser, getUserList, deleteUserByOfficeId };

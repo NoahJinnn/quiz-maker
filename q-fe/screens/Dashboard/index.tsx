@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { usePagination, useTable } from 'react-table';
 import { io } from 'socket.io-client';
 
-import { getUserList } from '@apis/user';
+import { deleteUserByOfficeId, getUserList } from '@apis/user';
+import { Button, Icon, Modal } from '@library/haloLib';
 
 import style from './index.module.scss';
 
@@ -29,6 +30,10 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
         Header: 'Tổng điểm',
         accessor: 'point',
       },
+      {
+        Header: 'Xóa',
+        accessor: 'delete',
+      },
     ],
     []
   );
@@ -37,7 +42,7 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
     const userList = await getUserList();
 
     const tableData = userList
-      .map(({ id, name, officeId, point }) => ({
+      .map(({ id, officeId, point }) => ({
         id,
         officeId,
         point,
@@ -50,7 +55,7 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
   useEffect(() => {
     setInterval(() => {
       initTableData();
-    }, 1000);
+    }, 3000);
   }, []);
 
   return (
@@ -61,7 +66,7 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
     </div>
   );
 };
-
+let officeId;
 function Table({ columns, data }) {
   const {
     getTableProps,
@@ -88,6 +93,14 @@ function Table({ columns, data }) {
     usePagination
   );
 
+  const [showModal, setShowModal] = useState(true);
+  // const [officeId, setOfficeId] = useState('abc');
+
+  const onConfirm = () => {
+    deleteUserByOfficeId(officeId);
+    setShowModal(false);
+  };
+
   return (
     <div className={`flex flex-column justify-center items-center ${style['user-dashboard']}`}>
       <table {...getTableProps()}>
@@ -106,6 +119,23 @@ function Table({ columns, data }) {
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map((cell) => {
+                  if (cell.column.id === 'delete') {
+                    return (
+                      <td>
+                        <div>
+                          <Button
+                            customStyle={{ borderRight: 'solid' }}
+                            customClassName="center"
+                            onClick={() => {
+                              // setOfficeId(cell.row.cells[1].value);
+                              officeId = cell.row.cells[1].value;
+                              setShowModal(true);
+                            }}
+                            prefixIcon={<Icon name="RemoveIcon" />}></Button>
+                        </div>
+                      </td>
+                    );
+                  }
                   return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                 })}
               </tr>
@@ -156,6 +186,13 @@ function Table({ columns, data }) {
           ))}
         </select>
       </div>
+      <Modal
+        visible={showModal}
+        title="Bạn chắc chắn xóa người chơi này?"
+        onCancel={() => {
+          setShowModal(false);
+        }}
+        onOK={onConfirm}></Modal>
     </div>
   );
 }
