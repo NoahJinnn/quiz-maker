@@ -1,13 +1,10 @@
+import { Button, Icon } from '@library/haloLib';
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
-import { Button, Icon } from '@library/haloLib';
-
 import BackgroundEndImage from '../public/endgame.jpg';
-import BackgroundImage from '../public/login.png';
 import BackgroundGameImage from '../public/quizbg.jpg';
-import style from './index.module.scss';
 
 const Background: IComponent<{ opa?: number; zIndex?: number }> = ({ zIndex = -1 }) => {
   const [img, setImg] = useState<string | null>(null);
@@ -37,7 +34,7 @@ const Background: IComponent<{ opa?: number; zIndex?: number }> = ({ zIndex = -1
 
 const BackgroundEnd: IComponent<{ opa?: number; zIndex?: number }> = () => {
   return (
-    <div className={`absolute w-100 h-100 top-0 left-0`} style={{ zIndex: 0 }}>
+    <div className="absolute w-100 h-100 top-0 left-0" style={{ zIndex: 0 }}>
       <Image
         src={BackgroundEndImage}
         layout="fill"
