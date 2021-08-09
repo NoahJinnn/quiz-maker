@@ -1,5 +1,5 @@
 import { createUser } from '@apis/user';
-import { Background, Map1Content } from '@components/Background';
+import { Background, MapContent } from '@components/Background';
 import { Button, Input, showToastAlert } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
@@ -10,6 +10,7 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
   // const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
   const [passCheckpoint, setPassCheckpoint] = useState(false);
+
   const bgPlayingRef = useRef(false);
 
   // const handleUserNameChange = (ev: ChangeEvent<HTMLInputElement>) => setUserName(ev.target.value);
@@ -65,13 +66,13 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
     return (
       <div className="flex h-100 w-100 center-items flex-column animate__animated animate__fadeIn relative">
         <Background />
-        <p className="ma0 mw8 fe3 fw6 tc pb3">
-          Tiếp nối hoạt động A-tươi-mới, đổi khung ảnh đại diện để lan tỏa thông điệp Tin Yêu trên
-          Facebook, chào mừng bạn đến với hoạt động thứ 2 mừng Sinh nhật Aviva lên 4 - A-thông-thái
+        <p style={{ paddingTop: '20%' }} className="ma0 mw8 fe5 fw6 tc pb3">
+          Chào mừng bạn đến với hoạt động thứ 2 mừng Sinh nhật Aviva _ 4 năm Tin Yêu
         </p>
         <p className="ma0 fe5 tc">
-          Hãy điền email để tham gia thể hiện sự Thông thái của bạn đi nào!
+          Hãy điền email để tham gia thể hiện sự “Thông thái” của bạn về Aviva đi nào!
         </p>
+        <p className="ma0 fe5 tc">Ví dụ: a.nguyenvan@aviva.com.vn</p>
         <div className="pb5 pt5">
           <Input
             onChange={handleUserIdChange}
@@ -87,14 +88,9 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
     );
   }
   if (!passCheckpoint) {
-    return <Map1Content onPress={handlePressCheckpoint} />;
+    return <MapContent onPress={handlePressCheckpoint} />;
   }
-  return (
-    <div className="w-100 vh-100 bg-white relative">
-      <Background zIndex={0} />
-      {children}
-    </div>
-  );
+  return <div className="w-100 vh-100 bg-white relative">{children}</div>;
 };
 
 export { LayoutPlayQuiz };

@@ -1,4 +1,6 @@
+/* eslint-disable react/no-unescaped-entities */
 import { addPoint, getUserList } from '@apis/user';
+import { BackgroundEnd, BackgroundGame } from '@components/Background';
 import { BaseConfig } from '@configs/base';
 import { answerColors } from '@configs/color';
 import { Button, cx } from '@library/haloLib';
@@ -116,17 +118,15 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   }, [currentIdxCard]);
 
   useEffect(() => {
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('BACKGROUND'));
-    }, 3000);
+    window.dispatchEvent(new CustomEvent('BACKGROUND'));
   }, []);
 
   const renderGame = useMemo(() => {
     if (currentIdxCard === -1) {
       return (
         <div className="flex flex-auto center-items flex-column">
-          <h4>Bắt đầu trong</h4>
-          <span className="fe4 fw6 gray">{Math.round(time)}</span>
+          <h4 className="fe3">Bắt đầu trong</h4>
+          <span className="fe1 fw6">{Math.round(time)}</span>
         </div>
       );
     }
@@ -224,32 +224,34 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
 
   if (isTheEnd) {
     return (
-      <div className="w-100 center-items flex-column vh-100 overflow-auto pa3">
-        <p className="fe2-ns fe7 b gray tc">Chúc mừng bạn đã xuất sắc hoàn thành thử thách.</p>
-        <p className="fe2-ns fe7 b gray tc">
-          {' '}
-          Điểm Thông thái của bạn là{' '}
-          <span style={{ fontSize: 64, color: '#004EDA' }}>{currentScore}</span>
-        </p>
-
-        <div className="w-100">
-          <p className="label fe7 fe4-ns">
-            Hiện đang có {users.length} Aviva-er cùng bạn tham gia chặng đấu này, với 3 chiến binh
-            "Thông thái" dẫn đầu là:
+      <div className="w-100 h-100 center-items flex-column vh-100 overflow-auto pa3 relative">
+        <BackgroundEnd />
+        <div className="z-1 flex flex-column w-100 pt8 mt6">
+          <p className="fe2-ns fe7 b tc ma0">Chúc mừng bạn đã xuất sắc hoàn thành thử thách</p>
+          <p className="fe2-ns fe7 b tc ma0">
+            {' '}
+            Điểm Thông thái của bạn là{' '}
+            <span style={{ fontSize: 64, color: '#004EDA' }}>{currentScore}</span>
           </p>
-          {topScore.map((score, idx) => {
-            return (
-              <div
-                // eslint-disable-next-line react/no-array-index-key
-                key={idx}
-                className="flex w-100 flex-row ph3 fe7 fe4-ns"
-                style={{ background: idx % 2 === 0 ? '#eee' : 'transparent' }}>
-                <p>A-thông-thái {idx + 1}</p>
-                <div className="flex-auto" />
-                <p>{score}</p>
-              </div>
-            );
-          })}
+
+          <div className="w-100">
+            <p className="fe7 fe6-ns">
+              Hiện đang có {users.length} Aviva-er cùng bạn tham gia chặng đấu này, với 3 chiến binh
+              “Thông thái” dẫn đầu là:
+            </p>
+            {topScore.map((score, idx) => {
+              return (
+                <div
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={idx}
+                  className="flex w-100 flex-row ph3 fe7 fe6-m fe4-l pv3 ma1 bg-white br4">
+                  <p className="ma0">A-thông-thái {idx + 1}</p>
+                  <div className="flex-auto" />
+                  <p className="ma0">{score.toLocaleString('en-US')}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
@@ -257,9 +259,12 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
 
   return (
     <div className="w-100 h-100 relative flex center-items flex-column">
-      {renderGame}
-      <div className="w-100 center-items pa3 mt1 shadow-4">
-        Score: <TextTransition className="ml2" text={currentScore} />
+      <BackgroundGame />
+      <div className="w-100 h-100 flex flex-column z-1">
+        {renderGame}
+        <div className="w-100 center-items pa3 mt1 shadow-4 bg-white">
+          Score: <TextTransition className="ml2" text={currentScore} />
+        </div>
       </div>
     </div>
   );

@@ -17,24 +17,27 @@ const LayoutInit: IComponent = ({ children }) => {
     }
   };
 
-  const playBg = () => {};
+  const lowerBg = () => {
+    const audio: HTMLAudioElement = document.getElementById('bgSound') as any;
+    audio.volume = 0.2;
+  };
 
   useEffect(() => {
     window.addEventListener('RIGHT', playRight, true);
     window.addEventListener('WRONG', playWrong, true);
-    window.addEventListener('BACKGROUND', playBg, true);
+    window.addEventListener('BACKGROUND', lowerBg, true);
     return () => {
       window.removeEventListener('RIGHT', playRight);
       window.removeEventListener('WRONG', playWrong);
-      window.removeEventListener('BACKGROUND', playBg);
+      window.removeEventListener('BACKGROUND', lowerBg);
     };
   }, []);
 
   return (
     <div className="w-100 vh-100 bg-med">
-      <audio id="rightSound" src="/audios/right_answer.mp3" />
-      <audio id="wrongSound" src="/audios/wrong_answer.mp3" />
-      <audio id="bgSound" src="/audios/background.mp3" />
+      <audio preload="auto" id="rightSound" src="/audios/right_answer.mp3" />
+      <audio preload="auto" id="wrongSound" src="/audios/wrong_answer.mp3" />
+      <audio preload="auto" id="bgSound" src="/audios/background.mp3" />
       {children}
       <Portal>
         <AlertToastContainer />
