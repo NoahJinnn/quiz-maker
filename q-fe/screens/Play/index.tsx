@@ -240,7 +240,9 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
           <p className="fe2-ns fe7 b tc ma0">
             {' '}
             Điểm Thông thái của bạn là{' '}
-            <span style={{ fontSize: 64, color: '#004EDA' }}>{currentScore}</span>
+            <span style={{ fontSize: 64, color: '#004EDA' }}>
+              {currentScore.toLocaleString('de-DE')}
+            </span>
           </p>
 
           <div className="w-100 pt8">
@@ -256,7 +258,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
                   className="flex w-100 flex-row ph3 fe7 fe6-m fe4-l pv3 ma1 bg-white br4">
                   <p className="ma0">A-thông-thái {idx + 1}</p>
                   <div className="flex-auto" />
-                  <p className="ma0">{score.toLocaleString('en-US')}</p>
+                  <p className="ma0">{score.toLocaleString('de-DE')}</p>
                 </div>
               );
             })}

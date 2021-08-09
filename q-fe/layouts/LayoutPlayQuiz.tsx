@@ -51,7 +51,8 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
 
   useEffect(() => {
     const audio: HTMLAudioElement = document.getElementById('bgSound') as any;
-    audio.volume = 0.5;
+    audio.volume = 0.3;
+    audio.loop = true;
     if (audio) {
       // Should be on click
       document.body.addEventListener('mousedown', () => {
