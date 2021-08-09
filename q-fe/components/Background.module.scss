@@ -1,32 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
-html {
-  font-family: 'Inter', sans-serif;
-  font-size: 16px !important;
-  height: 100vh;
-  margin: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 0;
-  scroll-behavior: smooth;
-  width: 100vw;
-}
-
-body {
-  height: 100%;
-  width: 100%;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-  // line-height: normal !important;
-}
-
 .my-bg {
   background: -moz-linear-gradient(
     50% 100% 90deg,
@@ -89,11 +60,11 @@ a {
     0deg,
     rgba(255, 255, 255, 1) 18.47%,
     rgba(249, 253, 254, 0.92) 28.01%,
-    rgba(125, 203, 225, 0.44) 40.13%,
-    rgba(125, 203, 225, 0.44) 53.65%,
-    #4eb4d3 68.17%,
-    #4eb4d3 83.52%,
-    #4eb4d3 99.31%,
-    #4eb4d3 100%
+    rgba(234, 247, 250, 0.81) 40.13%,
+    rgba(208, 236, 244, 0.7) 53.65%,
+    rgba(171, 222, 236, 0.57) 68.17%,
+    rgba(125, 203, 225, 0.44) 83.52%,
+    rgba(69, 181, 212, 0.31) 99.31%,
+    rgba(66, 180, 211, 0.3) 100%
   );
 }

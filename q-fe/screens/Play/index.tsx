@@ -1,13 +1,15 @@
+import axios from 'axios';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import TextTransition from 'react-text-transition';
+import { useRecoilValue } from 'recoil';
+
 /* eslint-disable react/no-unescaped-entities */
 import { addPoint, getUserList } from '@apis/user';
 import { BackgroundEnd, BackgroundGame } from '@components/Background';
 import { BaseConfig } from '@configs/base';
 import { answerColors } from '@configs/color';
-import { Button, cx } from '@library/haloLib';
+import { Button, cx, Icon } from '@library/haloLib';
 import { atomUserInfo } from '@recoil/app';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import TextTransition from 'react-text-transition';
-import { useRecoilValue } from 'recoil';
 
 /**
  * Declare screen props
@@ -199,7 +201,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
       </div>
     );
   }, [currentIdxCard, time, answIdx]);
-
+  const [img, setImg] = useState<string | null>(null);
   useEffect(() => {
     if (isTheEnd) {
       void getUserList().then((data) => {
@@ -211,6 +213,13 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
             .map((a) => a.point)
         );
       });
+      void axios
+        .get(`/endgame.jpg`, { responseType: 'blob' })
+        .then((response) => {
+          const image = response.data as Blob;
+          setImg(URL.createObjectURL(image));
+        })
+        .catch((e) => console.log(e));
     }
   }, [isTheEnd]);
 
@@ -223,7 +232,7 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
   }
 
   if (isTheEnd) {
-    return (
+    return !!img ? (
       <div className="w-100 h-100 center-items flex-column vh-100 overflow-auto pa3 relative">
         <BackgroundEnd />
         <div className="z-1 flex flex-column w-100 pt8 mt6">
@@ -234,8 +243,8 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
             <span style={{ fontSize: 64, color: '#004EDA' }}>{currentScore}</span>
           </p>
 
-          <div className="w-100">
-            <p className="fe7 fe6-ns">
+          <div className="w-100 pt8">
+            <p className="fe7 fe6-ns center-items">
               Hiện đang có {users.length} Aviva-er cùng bạn tham gia chặng đấu này, với 3 chiến binh
               “Thông thái” dẫn đầu là:
             </p>
@@ -253,6 +262,11 @@ export const PlayScreen: IComponent<IScreenProps> = ({ quiz }) => {
             })}
           </div>
         </div>
+      </div>
+    ) : (
+      <div className="flex flex-row center-items h-100">
+        <Icon name="LoadingIcon" />
+        <p className="pl3">Đang tải, vui lòng đợi chút...</p>
       </div>
     );
   }
