@@ -1,8 +1,7 @@
+import { Button, Icon } from '@library/haloLib';
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-
-import { Button, Icon } from '@library/haloLib';
 
 import BackgroundEndImage from '../public/endgame.jpg';
 import BackgroundGameImage from '../public/quizbg.jpg';
