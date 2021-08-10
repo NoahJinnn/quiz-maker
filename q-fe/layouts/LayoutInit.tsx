@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-
+import { right64, wrong64 } from '@configs/audio';
 /* eslint-disable jsx-a11y/media-has-caption */
 import { AlertToastContainer, Portal } from '@library/haloLib';
+import React, { useEffect } from 'react';
 
 const LayoutInit: IComponent = ({ children }) => {
   const playRight = () => {
@@ -36,8 +36,12 @@ const LayoutInit: IComponent = ({ children }) => {
 
   return (
     <div className="w-100 vh-100 bg-med">
-      <audio preload="auto" id="rightSound" src="/audios/right_answer.mp3" />
-      <audio preload="auto" id="wrongSound" src="/audios/wrong_answer.mp3" />
+      <audio preload="auto" id="rightSound">
+        <source src={right64} />
+      </audio>
+      <audio preload="auto" id="wrongSound">
+        <source src={wrong64} />
+      </audio>
       <audio preload="auto" id="bgSound" src="/audios/background.mp3" />
       {children}
       <Portal>
