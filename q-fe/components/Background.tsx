@@ -1,7 +1,8 @@
-import { Button, Icon } from '@library/haloLib';
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
+
+import { Button, Icon } from '@library/haloLib';
 
 import BackgroundEndImage from '../public/endgame.jpg';
 import BackgroundGameImage from '../public/quizbg.jpg';
@@ -103,7 +104,7 @@ const MapContent: IComponent<{ onPress: () => void }> = ({ onPress }) => {
           <img alt="map-content" src={img} className="w-100 h-100" style={{ objectFit: 'fill' }} />
           <div className="absolute right-1 bottom-1">
             <Button
-              customClassName="nowrap animate__animated animate__fadeInRight mb2 mr2"
+              customClassName="nowrap animate__animated animate__fadeInRight mb8 mr2"
               primary
               type="info"
               onClick={onPress}>
