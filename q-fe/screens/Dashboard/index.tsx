@@ -31,6 +31,10 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
         accessor: 'point',
       },
       {
+        Header: 'Số câu đã trả lời',
+        accessor: 'quizCnt',
+      },
+      {
         Header: 'Xóa',
         accessor: 'delete',
       },
@@ -42,10 +46,11 @@ export const DashboardScreen: IComponent<IScreenProps> = () => {
     const userList = await getUserList();
 
     const tableData = userList
-      .map(({ id, officeId, point }) => ({
+      .map(({ id, officeId, point, answeredQuizs }) => ({
         id,
         officeId,
         point,
+        quizCnt: answeredQuizs.length,
       }))
       .sort((a, b) => b.point - a.point)
       .map((item, idx) => ({ ...item, rank: idx + 1 }));
