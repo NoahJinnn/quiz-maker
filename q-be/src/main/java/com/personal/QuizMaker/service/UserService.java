@@ -1,15 +1,13 @@
 package com.personal.QuizMaker.service;
 
 import com.mongodb.WriteConcernException;
-import com.personal.QuizMaker.model.*;
-import com.personal.QuizMaker.repository.QuizRepository;
-import com.personal.QuizMaker.repository.UserHistoryRepository;
+import com.personal.QuizMaker.configuration.MailListConfig;
+import com.personal.QuizMaker.model.AddPointDTO;
+import com.personal.QuizMaker.model.DuplicateNameException;
+import com.personal.QuizMaker.model.MailNotFoundException;
+import com.personal.QuizMaker.model.User;
 import com.personal.QuizMaker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -28,11 +26,6 @@ public class UserService {
     private ScheduledExecutorService validator;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserHistoryRepository userHistoryRepository;
-    @Autowired
-    private QuizRepository quizRepository;
-
 
     @PostConstruct
     void initScheduler() {
@@ -70,16 +63,20 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        if(!MailListConfig.mailSet.contains(user.getOfficeId())) {
+            throw new MailNotFoundException("Mail is not valid");
+        }
+
         try {
             User savedUser = userRepository.save(user);
             // Record user
-            CopyUser copyUser = CopyUser.builder().id(savedUser.getId())
-                                                    .officeId(savedUser.getOfficeId())
-                                                    .point(savedUser.getPoint())
-                                                    .answeredQuizs(savedUser.getAnsweredQuizs())
-                                                    .build();
-            UserHistory userHistory = new UserHistory(savedUser.getId(), copyUser, 0);
-            userHistoryRepository.save(userHistory);
+//            CopyUser copyUser = CopyUser.builder().id(savedUser.getId())
+//                                                    .officeId(savedUser.getOfficeId())
+//                                                    .point(savedUser.getPoint())
+//                                                    .answeredQuizs(savedUser.getAnsweredQuizs())
+//                                                    .build();
+//            UserHistory userHistory = new UserHistory(savedUser.getId(), copyUser, 0);
+//            userHistoryRepository.save(userHistory);
             // Add user to heartbeat map
             userMap.put(savedUser.getId(), savedUser);
             return savedUser;
@@ -105,17 +102,17 @@ public class UserService {
         userRepository.save(user);
 
         // Record user state
-        UserHistory userHistory = userHistoryRepository.findByUserId(userId);
-        Optional<Quiz> optionalQuiz = quizRepository.findById(quizId);
-        Quiz currentQuiz = optionalQuiz.orElseThrow(() -> new RuntimeException("Can't find current quiz"));
-        CopyUser copyUser = CopyUser.builder().id(user.getId())
-                .officeId(user.getOfficeId())
-                .point(user.getPoint())
-                .answeredQuizs(user.getAnsweredQuizs())
-                .build();
-        userHistory.setUser(copyUser);
-        userHistory.setQuizListId(currentQuiz.getQuizListId());
-        userHistoryRepository.save(userHistory);
+//        UserHistory userHistory = userHistoryRepository.findByUserId(userId);
+//        Optional<Quiz> optionalQuiz = quizRepository.findById(quizId);
+//        Quiz currentQuiz = optionalQuiz.orElseThrow(() -> new RuntimeException("Can't find current quiz"));
+//        CopyUser copyUser = CopyUser.builder().id(user.getId())
+//                .officeId(user.getOfficeId())
+//                .point(user.getPoint())
+//                .answeredQuizs(user.getAnsweredQuizs())
+//                .build();
+//        userHistory.setUser(copyUser);
+//        userHistory.setQuizListId(currentQuiz.getQuizListId());
+//        userHistoryRepository.save(userHistory);
     }
 
     public Map<String, User> getUserMap() {

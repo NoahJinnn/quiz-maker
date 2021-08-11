@@ -38,14 +38,32 @@ const LayoutPlayQuiz: IComponent = ({ children }) => {
       .then((data) => {
         setUserInfo(data);
       })
-      .catch(() => {
-        showToastAlert({
-          title: 'Email đã thực hiện vòng chơi!',
-          subTitle: 'Vui lòng nhập 1 email khác',
-          duration: 3000,
-          position: 'top-right',
-          type: 'warning',
-        });
+      .catch((error) => {
+        if (error?.response?.data?.errorCode === 511) {
+          showToastAlert({
+            title: 'Email không hợp lệ!',
+            subTitle: 'Vui lòng nhập email hợp lệ',
+            duration: 3000,
+            position: 'top-right',
+            type: 'warning',
+          });
+        } else if (error?.response?.data?.errorCode === 11000) {
+          showToastAlert({
+            title: 'Email đã thực hiện vòng chơi!',
+            subTitle: 'Vui lòng nhập 1 email khác',
+            duration: 3000,
+            position: 'top-right',
+            type: 'warning',
+          });
+        } else {
+          showToastAlert({
+            title: 'Có lỗi xảy ra!',
+            subTitle: 'Vui lòng nhập 1 email khác',
+            duration: 3000,
+            position: 'top-right',
+            type: 'warning',
+          });
+        }
       });
   };
 

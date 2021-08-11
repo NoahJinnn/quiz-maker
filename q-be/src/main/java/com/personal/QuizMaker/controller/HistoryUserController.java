@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,5 +23,11 @@ public class HistoryUserController {
     @GetMapping("/userHistory")
     public ResponseEntity<List<UserHistory>> getAllUsers() {
         return new ResponseEntity<>(userHistoryRepository.findAll(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/allHistory")
+    public ResponseEntity<String> deleteAllHistory() {
+        userHistoryRepository.deleteAll();
+        return new ResponseEntity<>("Delete success", HttpStatus.OK);
     }
 }

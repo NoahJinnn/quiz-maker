@@ -65,6 +65,8 @@ public class UserController {
             return new ResponseEntity<>(new ApiError(exc.getMessage() ,11000), HttpStatus.BAD_REQUEST);
         } else if(exc instanceof DuplicateKeyException) {
             return new ResponseEntity<>(new ApiError(exc.getMessage() ,11000), HttpStatus.BAD_REQUEST);
+        } else if(exc instanceof MailNotFoundException) {
+            return new ResponseEntity<>(new ApiError(exc.getMessage() ,511), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(new ApiError(exc.getMessage() ,0), HttpStatus.BAD_REQUEST);
     }
