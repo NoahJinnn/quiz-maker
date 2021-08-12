@@ -1,7 +1,7 @@
-import { DashboardScreen } from '@screens/Dashboard';
+interface ITemplatePageProps {}
 
-interface IIndexPagePageProps {}
+const TemplatePage: IPageComponent<ITemplatePageProps> = () => (
+  <div className="w-100 h-100 center-items gray fw6 fe7 ma0">Not Found</div>
+);
 
-const IndexPagePage: IPageComponent<IIndexPagePageProps> = () => <DashboardScreen />;
-
-export default IndexPagePage;
+export default TemplatePage;
